@@ -6,7 +6,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
 import Header from './Components/Layout/Header'
-import Footer from './Components/Layout/Footer'
 import Home from './Components/Home';
 
 //Guest
@@ -75,7 +74,6 @@ function App() {
 
         </Routes>
       </Router>
-      <Footer />
       <ToastContainer />
     </>
   )
