@@ -65,7 +65,7 @@ const Header = () => {
                 
                 {/* Circular Logo */}
                 <Box sx={{ width: 60, height: 60, borderRadius: '50%', overflow: 'hidden' }}>
-                    <Link to="/">
+                <Link to={user?.role === 'admin' ? "/dashboard" : "/"}>
                         <img 
                             src="./images/psp-logo.png" 
                             alt="Logo" 
@@ -93,7 +93,7 @@ const Header = () => {
                     ))}
                 </Box>
 
-                {/* Login/Profile on the Right */}
+                {/* Login/Profile menu*/}
                 <Box>
                     {user ? (
                         <>
