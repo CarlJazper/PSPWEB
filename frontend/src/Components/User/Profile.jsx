@@ -19,7 +19,7 @@ const Profile = () => {
             },
         };
         try {
-            const { data } = await axios.get(`http://localhost:4001/api/v1/me`, config);
+            const { data } = await axios.get(`http://localhost:8080/api/v1/me`, config);
             setUser(data.user);
             setLoading(false);
         } catch (error) {

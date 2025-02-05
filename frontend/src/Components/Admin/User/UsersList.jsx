@@ -27,7 +27,7 @@ const UsersList = () => {
 
   const listUsers = async () => {
     try {
-      const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/users`, config);
+      const { data } = await axios.get(`https://pspmobile.onrender.com/api/v1/users/get-all-users`, config);
       setAllUsers(data.users);
       setLoading(false);
     } catch (error) {
