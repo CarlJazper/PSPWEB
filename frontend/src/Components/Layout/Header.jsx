@@ -60,7 +60,7 @@ const Header = () => {
         ];
 
     return (
-        <AppBar position="sticky" sx={{ backgroundColor: 'transparent', boxShadow: 'none', pt: 1 }}>
+        <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', pt: 1 }}>
             <Toolbar sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 
                 {/* Circular Logo */}
