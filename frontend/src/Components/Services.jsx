@@ -77,7 +77,7 @@ const Services = () => {
         sx={{ textAlign: 'center', mt: 5, width: '100%' }}
       >
         <Link
-          href="/membership"
+          href="/memberships"
           className="membership-link"
           sx={{
             fontSize: 22,
