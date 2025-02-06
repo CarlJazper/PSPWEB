@@ -39,7 +39,7 @@ const Login = () => {
                     'Content-Type': 'application/json',
                 },
             };
-            const response = await axios.post(`http://localhost:4001/api/v1/login`, { email, password }, config);
+            const response = await axios.post(`https://pspmobile.onrender.com/api/v1/users/login`, { email, password }, config);
             authenticate(response.data, (redirectPath) => navigate(redirect || redirectPath || '/'));
         } catch (error) {
             toast.error('Invalid user or password', {
