@@ -152,7 +152,6 @@ const UsersList = () => {
     </>
   );
 };
-
 export default UsersList;
 
 /* CSS STYLES */
