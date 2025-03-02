@@ -5,10 +5,8 @@ import './App.css'
 import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-import Header from './Components/Layout/Header'
-import Home from './Components/Home';
-
 //Guest
+import Home from './Components/Home';
 import Coaches from './Components/Coaches';
 import Services from './Components/Services';
 import Memberships from './Components/Memberships';
@@ -17,66 +15,100 @@ import Map from './Components/Map';
 //Auth
 import Register from './Components/User/Register';
 import Login from './Components/User/Login';
-import ForgotPassword from './Components/User/ForgotPassword';
-import NewPassword from './Components/User/NewPassword';
+
+//User
 import Profile from './Components/User/Profile';
 import UpdateProfile from './Components/User/UpdateProfile';
 import UpdatePassword from './Components/User/UpdatePassword';
+import ForgotPassword from './Components/User/ForgotPassword';
+import NewPassword from './Components/User/NewPassword';
 
-//User
+//Admin
+import Dashboard from './Components/Admin/Dashboard';
+//Admin/User
 import UsersList from './Components/Admin/User/UsersList';
 import UpdateUser from './Components/Admin/User/UpdateUser';
+//Admin/Branch
+import BranchList from './Components/Admin/Branch/BranchList';
+import CreateBranch from './Components/Admin/Branch/CreateBranch';
+import UpdateBranch from './Components/Admin/Branch/UpdateBranch';
+//Admin/Exercise
+import ExerciseList from './Components/Admin/Exercise/ExerciseList';
+import CreateExercise from './Components/Admin/Exercise/CreateExercise';
+import UpdateExercise from './Components/Admin/Exercise/UpdateExercise';
 
+//utils
 import ProtectedRoute from './Components/Route/ProtectedRoute';
-import Dashboard from './Components/Admin/Dashboard';
 
-import axios from 'axios';
+//layouts
+import Header from './Components/Layout/Header'
 
 function App() {
-  
+  const [refresh, setRefresh] = useState(false);
+
+  const handleBranchCreated = () => {
+    setRefresh((prev) => !prev); // Toggle refresh state
+  };
+
+  const handleExerciseCreated = () => {
+    setRefresh((prev) => !prev); // Toggle refresh state
+  };
+
   return (
     <>
       <Router>
-        <Header/>
+        <Header />
         <Routes>
+          {/* Guest */}
           <Route path="/" element={<Home />} exact="true" />
+          <Route path="/coaches" element={<Coaches />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/memberships" element={<Memberships />} />
+          <Route path="/map" element={<Map />} />
+
+          {/* Auth */}
           <Route path="/login" element={<Login />} exact="true" />
           <Route path="/register" element={<Register exact="true" />} />
+
+          {/* User */}
+          <Route path="/me" element={<Profile />} exact="true" />
+          <Route path="/me/update" element={<UpdateProfile />} exact="true" />
+          <Route path="/password/update" element={<UpdatePassword />} />
           <Route path="/password/forgot" element={<ForgotPassword />} exact="true" />
           <Route path="/password/reset/:token" element={<NewPassword />} exact="true" />
-          <Route path="/me" element={<Profile />} exact="true" />
-          <Route path="/me/update"element={<UpdateProfile />}exact="true"/>
-          <Route path="/password/update" element={<UpdatePassword />} />
-          <Route path="/admin/user/:id" element={<UpdateUser />} />
-          
-          <Route path="/coaches" element={<Coaches/>}/>
-          <Route path="/services" element={<Services/>}/>
-          <Route path="/memberships" element={<Memberships/>}/>
-          <Route path="/map" element={<Map/>}/>
 
+          {/* Admin */}
           <Route
-            path="/admin/users"
+            path="/admin/*"
             element={
               <ProtectedRoute isAdmin={true}>
-                <UsersList />
+                <Routes>
+                  <Route path="dashboard" element={<Dashboard />} />
+
+                  {/* User Routes */}
+                  <Route path="users" element={<UsersList />} />
+                  <Route path="user/:id" element={<UpdateUser />} />
+
+                  {/* Branch Routes */}
+                  <Route path="branches" element={<BranchList refresh={refresh} />} />
+                  <Route path="create-branch" element={<CreateBranch onBranchCreated={handleBranchCreated} />} />
+                  <Route path="update-branch/:id" element={<UpdateBranch />} />
+
+                  {/* Exercise Routes */}
+                  <Route path="exercises" element={<ExerciseList refresh={refresh} />} />
+                  <Route path="create-exercises" element={<CreateExercise onExerciseCreated={handleExerciseCreated} />} />
+                  <Route path="update-exercise/:id" element={<UpdateExercise />} />
+
+
+                </Routes>
               </ProtectedRoute>
             }
           />
-          
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute isAdmin={true}>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-
         </Routes>
       </Router>
       <ToastContainer />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

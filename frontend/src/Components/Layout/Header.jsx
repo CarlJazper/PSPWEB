@@ -45,10 +45,10 @@ const Header = () => {
     // Define nav links based on user role
     const navLinks = user?.role === 'admin'
         ? [
-            { name: 'Dashboard', path: '/dashboard' },
-            { name: 'Reports', path: '/reports' },
-            { name: 'Blogs', path: '/blogs' },
-            { name: 'Streams', path: '/streams' },
+            { name: 'Dashboard', path: 'admin/dashboard' },
+            { name: 'Reports', path: 'admin/reports' },
+            { name: 'Blogs', path: 'admin/blogs' },
+            { name: 'Streams', path: 'admin/streams' },
         ]
         : [
             { name: 'Home', path: '/' },

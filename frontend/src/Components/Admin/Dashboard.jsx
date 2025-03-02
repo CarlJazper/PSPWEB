@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Grid, Card, CardContent, Typography, Button, CircularProgress, Divider } from '@mui/material';
-import { Group } from '@mui/icons-material';
+import { Group, Store, FitnessCenter } from '@mui/icons-material'; // Added FitnessCenter icon for exercises
 
 import MetaData from '../Layout/MetaData';
 import { getToken } from '../../utils/helpers';
@@ -10,12 +10,25 @@ import axios from 'axios';
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [allUsers, setAllUsers] = useState([]);
+    const [branchesCount, setBranchesCount] = useState(0);
+    const [exercisesCount, setExercisesCount] = useState(0); // State for exercises count
 
-    const adminUsers = async () => {
+    const fetchAdminData = async () => {
         try {
             const config = { headers: { Authorization: `Bearer ${getToken()}` } };
-            const { data } = await axios.get(`https://pspmobile.onrender.com/api/v1/users/get-all-users`, config);
-            setAllUsers(data.users);
+
+            // Fetch users count
+            const { data: usersData } = await axios.get(`https://pspmobile.onrender.com/api/v1/users/get-all-users`, config);
+            setAllUsers(usersData.users);
+
+            // Fetch branches count
+            const { data: branchesData } = await axios.get(`http://localhost:8000/api/v1/branch/get-branches`);
+            setBranchesCount(branchesData.branch.length);
+
+            // Fetch exercises count
+            const { data: exercisesData } = await axios.get(`http://localhost:8000/api/v1/exercises/get-exercise`);
+            setExercisesCount(exercisesData.exercises.length);
+
             setLoading(false);
         } catch (error) {
             console.error(error);
@@ -24,7 +37,7 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        adminUsers();
+        fetchAdminData();
     }, []);
 
     const renderStatCard = (title, value, icon, gradient, link) => (
@@ -78,10 +91,24 @@ const Dashboard = () => {
                     <Grid container spacing={3}>
                         {renderStatCard(
                             'Users',
-                            allUsers.length, // ✅ Correctly displays user count
+                            allUsers.length,
                             <Group sx={{ fontSize: 40 }} />,
                             'linear-gradient(to right, #2196f3, #64b5f6)',
                             '/admin/users'
+                        )}
+                        {renderStatCard(
+                            'Branches',
+                            branchesCount,
+                            <Store sx={{ fontSize: 40 }} />, 
+                            'linear-gradient(to right, #ff9800, #ffb74d)',
+                            '/admin/branches'
+                        )}
+                        {renderStatCard(
+                            'Exercises',
+                            exercisesCount,
+                            <FitnessCenter sx={{ fontSize: 40 }} />, // 🏋️‍♂️ FitnessCenter icon for exercises
+                            'linear-gradient(to right, #4caf50, #81c784)',
+                            '/admin/exercises' // Navigates to Exercises List page
                         )}
                     </Grid>
                 )}
