@@ -15,11 +15,15 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Container,
+  Avatar,
 } from "@mui/material";
+import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import MetaData from "../../Layout/MetaData";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -100,79 +104,202 @@ const Register = () => {
   return (
     <>
       <MetaData title={"Register User"} />
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-        <Grid container justifyContent="center">
-          <Grid item xs={12} sm={10} md={8} lg={6}>
-            <Paper sx={{ p: 3, borderRadius: 2 }}>
-              <Typography variant="h4" align="center" sx={{ mb: 3, fontWeight: 600 }}>
-                Register
-              </Typography>
-              <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
-                {/* Name */}
-                <Controller name="name" control={control} render={({ field }) => (
-                  <TextField {...field} label="Name" fullWidth sx={{ mb: 2 }} error={!!errors.name} helperText={errors.name?.message} />
-                )} />
+      <Box sx={{ minHeight: '100vh', py: 4 }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} justifyContent="center">
+            <Grid item xs={12} md={8} lg={7}>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <Paper
+                  elevation={3}
+                  sx={{
+                    p: 4,
+                    borderRadius: 4,
+                    bgcolor: 'rgba(17, 17, 17, 0.8)',
+                    color: '#fff',
+                  }}
+                >
+                  <Box sx={{ textAlign: 'center', mb: 4 }}>
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <PersonAddIcon
+                        sx={{
+                          fontSize: 40,
+                          mb: 2,
+                          background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+                          borderRadius: '50%',
+                          p: 1,
+                          color: '#fff',
+                        }}
+                      />
+                    </motion.div>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        fontWeight: 700,
+                        background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        color: 'transparent',
+                        mb: 3,
+                      }}
+                    >
+                      Create Account
+                    </Typography>
+                  </Box>
 
-                {/* Email */}
-                <Controller name="email" control={control} render={({ field }) => (
-                  <TextField {...field} label="Email" type="email" fullWidth sx={{ mb: 2 }} error={!!errors.email} helperText={errors.email?.message} />
-                )} />
+                  <form onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
+                    <Grid container spacing={2}>
+                      {/* Avatar Preview and Upload */}
+                      <Grid item xs={12} sx={{ textAlign: 'center', mb: 2 }}>
+                        <Avatar
+                          src={avatarPreview}
+                          sx={{
+                            width: 100,
+                            height: 100,
+                            margin: '0 auto',
+                            mb: 2,
+                            border: '4px solid rgba(255,255,255,0.1)',
+                          }}
+                        />
+                        <Button
+                          variant="outlined"
+                          component="label"
+                          startIcon={<CloudUploadIcon />}
+                          sx={{
+                            color: '#4ECDC4',
+                            borderColor: '#4ECDC4',
+                            '&:hover': {
+                              borderColor: '#FF6B6B',
+                              color: '#FF6B6B',
+                            },
+                          }}
+                        >
+                          Upload Photo
+                          <input type="file" hidden onChange={handleAvatarChange} accept="image/*" />
+                        </Button>
+                      </Grid>
 
-                {/* Password */}
-                <Controller name="password" control={control} render={({ field }) => (
-                  <TextField {...field} label="Password" type="password" fullWidth sx={{ mb: 2 }} error={!!errors.password} helperText={errors.password?.message} />
-                )} />
+                      {/* Form Fields */}
+                      {[
+                        { name: "name", label: "Name", type: "text" },
+                        { name: "email", label: "Email", type: "email" },
+                        { name: "password", label: "Password", type: "password" },
+                        { name: "birthDate", label: "Birth Date", type: "date" },
+                        { name: "address", label: "Address", type: "text" },
+                        { name: "city", label: "City", type: "text" },
+                        { name: "phone", label: "Phone", type: "text" },
+                        { name: "emergencyContanctName", label: "Emergency Contact Name", type: "text" },
+                        { name: "emergencyContanctNumber", label: "Emergency Contact Number", type: "text" },
+                      ].map((field) => (
+                        <Grid item xs={12} sm={6} key={field.name}>
+                          <Controller
+                            name={field.name}
+                            control={control}
+                            render={({ field: fieldProps }) => (
+                              <TextField
+                                {...fieldProps}
+                                type={field.type}
+                                label={field.label}
+                                fullWidth
+                                error={!!errors[field.name]}
+                                helperText={errors[field.name]?.message}
+                                InputLabelProps={{
+                                  shrink: true,
+                                  sx: { color: 'rgba(255,255,255,0.7)' }
+                                }}
+                                InputProps={{
+                                  sx: {
+                                    color: '#fff',
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                      borderColor: 'rgba(255,255,255,0.2)',
+                                    },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                                      borderColor: 'rgba(255,255,255,0.3)',
+                                    },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                      borderColor: '#4ECDC4',
+                                    },
+                                  },
+                                }}
+                              />
+                            )}
+                          />
+                        </Grid>
+                      ))}
 
-                {/* Birth Date */}
-                <Controller name="birthDate" control={control} render={({ field }) => (
-                  <TextField {...field} label="Birth Date" type="date" fullWidth sx={{ mb: 2 }} error={!!errors.birthDate} helperText={errors.birthDate?.message} InputLabelProps={{ shrink: true }} />
-                )} />
+                      {/* Branch Selection */}
+                      <Grid item xs={12}>
+                        <FormControl fullWidth>
+                          <InputLabel sx={{ color: 'rgba(255,255,255,0.7)' }}>Branch</InputLabel>
+                          <Controller
+                            name="userBranch"
+                            control={control}
+                            render={({ field }) => (
+                              <Select
+                                {...field}
+                                error={!!errors.userBranch}
+                                sx={{
+                                  color: '#fff',
+                                  '& .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'rgba(255,255,255,0.2)',
+                                  },
+                                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: 'rgba(255,255,255,0.3)',
+                                  },
+                                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                    borderColor: '#4ECDC4',
+                                  },
+                                }}
+                              >
+                                {branches.map(branch => (
+                                  <MenuItem key={branch._id} value={branch._id}>
+                                    {branch.name}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            )}
+                          />
+                        </FormControl>
+                      </Grid>
 
-                {/* Address */}
-                <Controller name="address" control={control} render={({ field }) => (
-                  <TextField {...field} label="Address" fullWidth sx={{ mb: 2 }} error={!!errors.address} helperText={errors.address?.message} />
-                )} />
-
-                {/* City */}
-                <Controller name="city" control={control} render={({ field }) => (
-                  <TextField {...field} label="City" fullWidth sx={{ mb: 2 }} error={!!errors.city} helperText={errors.city?.message} />
-                )} />
-
-                {/* Phone */}
-                <Controller name="phone" control={control} render={({ field }) => (
-                  <TextField {...field} label="Phone" fullWidth sx={{ mb: 2 }} error={!!errors.phone} helperText={errors.phone?.message} />
-                )} />
-
-                {/* Emergency Contact Name */}
-                <Controller name="emergencyContanctName" control={control} render={({ field }) => (
-                  <TextField {...field} label="Emergency Contact Name" fullWidth sx={{ mb: 2 }} error={!!errors.emergencyContanctName} helperText={errors.emergencyContanctName?.message} />
-                )} />
-
-                {/* Emergency Contact Number */}
-                <Controller name="emergencyContanctNumber" control={control} render={({ field }) => (
-                  <TextField {...field} label="Emergency Contact Number" fullWidth sx={{ mb: 2 }} error={!!errors.emergencyContanctNumber} helperText={errors.emergencyContanctNumber?.message} />
-                )} />
-
-                {/* Branch */}
-                <FormControl fullWidth sx={{ mb: 2 }}>
-                  <InputLabel>Branch</InputLabel>
-                  <Controller name="userBranch" control={control} render={({ field }) => (
-                    <Select {...field} error={!!errors.userBranch}>
-                      {branches.map(branch => <MenuItem key={branch._id} value={branch._id}>{branch.name}</MenuItem>)}
-                    </Select>
-                  )} />
-                </FormControl>
-
-                {/* Avatar Upload */}
-                <Button variant="outlined" component="label">Choose Avatar<input type="file" hidden onChange={handleAvatarChange} /></Button>
-
-                <Button type="submit" variant="contained" fullWidth sx={{ py: 2, mt: 2 }} disabled={loading}>
-                  {loading ? <CircularProgress size={24} /> : "Register"}
-                </Button>
-              </form>
-            </Paper>
+                      {/* Submit Button */}
+                      <Grid item xs={12}>
+                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                          <Button
+                            type="submit"
+                            fullWidth
+                            disabled={loading}
+                            sx={{
+                              background: 'linear-gradient(45deg, #FF6B6B, #FF8E53)',
+                              color: '#fff',
+                              py: 1.5,
+                              fontSize: '1.1rem',
+                              fontWeight: 600,
+                              borderRadius: 2,
+                              textTransform: 'none',
+                              '&:hover': {
+                                background: 'linear-gradient(45deg, #FF8E53, #FF6B6B)',
+                              },
+                            }}
+                          >
+                            {loading ? <CircularProgress size={24} sx={{ color: '#fff' }} /> : "Create Account"}
+                          </Button>
+                        </motion.div>
+                      </Grid>
+                    </Grid>
+                  </form>
+                </Paper>
+              </motion.div>
+            </Grid>
           </Grid>
-        </Grid>
+        </Container>
       </Box>
     </>
   );
