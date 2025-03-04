@@ -42,7 +42,8 @@ import CreateTrainer from './Components/Admin/Trainer/CreateTrainer';
 import UpdateTrainer from './Components/Admin/Trainer/UpdateTrainer';
 
 //utils
-import ProtectedRoute from './Components/Route/ProtectedRoute';
+//import ProtectedRoute from './utils/ProtectedRoute';
+import ProtectedRoute from './utils/ProtectedRoute';
 
 //layouts
 import Header from './Components/Layout/Header'
