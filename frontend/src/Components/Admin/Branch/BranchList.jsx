@@ -26,7 +26,7 @@ const BranchList = ({ refresh }) => {
   const fetchBranches = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/branch/get-branches");
+      const response = await axios.get("http://localhost:8000/api/v1/branch/get-all-branches");
       setBranches(response.data.branch);
     } catch (error) {
       console.error("Error fetching branches", error);

@@ -35,30 +35,46 @@ exports.createPaymentIntent = async (req, res) => {
     }
 };
 
-// Create a new trainer
+//Create Trainer
 exports.createTrainer = async (req, res) => {
     try {
+        console.log("Received Data:", req.body); // Log incoming data
 
+        const { userId, sessions } = req.body;
+
+        if (!userId || !sessions) {
+            return res.status(400).json({ message: "User ID and sessions are required" });
+        }
+
+        // Find the user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Update user role to trainer/coach
+        user.role = "coach";
+        await user.save();
+
+        // Initialize schedule
         req.body.schedule = [];
-        for (let i = 0; i < req.body.sessions; i++) {
-
+        for (let i = 0; i < sessions; i++) {
             req.body.schedule.push({
                 index: i + 1,
                 dateAssigned: null, // Placeholder for date
                 timeAssigned: null, // Placeholder for time
-                status: 'pending',
+                status: "pending",
             });
-
         }
 
+        // Create trainer entry
         const trainer = new AvailTrainer(req.body);
-
         await trainer.save();
 
-        res.status(201).json({ message: 'Trainer created successfully', trainer });
-
+        res.status(201).json({ message: "Trainer created successfully", trainer });
     } catch (error) {
-        res.status(400).json({ message: 'Error creating trainer', error: error.message });
+        console.error("Error:", error);
+        res.status(400).json({ message: "Error creating trainer", error: error.message });
     }
 };
 

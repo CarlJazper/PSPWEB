@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Grid, Card, CardContent, Typography, Button, CircularProgress, Divider } from '@mui/material';
-import { Group, Store, FitnessCenter } from '@mui/icons-material'; // Added FitnessCenter icon for exercises
+import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
 
 import MetaData from '../Layout/MetaData';
 import { getToken } from '../../utils/helpers';
@@ -11,7 +11,8 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
     const [allUsers, setAllUsers] = useState([]);
     const [branchesCount, setBranchesCount] = useState(0);
-    const [exercisesCount, setExercisesCount] = useState(0); // State for exercises count
+    const [exercisesCount, setExercisesCount] = useState(0);
+    const [trainersCount, setTrainersCount] = useState(0);
 
     const fetchAdminData = async () => {
         try {
@@ -22,12 +23,16 @@ const Dashboard = () => {
             setAllUsers(usersData.users);
 
             // Fetch branches count
-            const { data: branchesData } = await axios.get(`http://localhost:8000/api/v1/branch/get-branches`);
+            const { data: branchesData } = await axios.get(`http://localhost:8000/api/v1/branch/get-all-branches`);
             setBranchesCount(branchesData.branch.length);
 
             // Fetch exercises count
-            const { data: exercisesData } = await axios.get(`http://localhost:8000/api/v1/exercises/get-exercise`);
+            const { data: exercisesData } = await axios.get(`http://localhost:8000/api/v1/exercises/get-all-exercise`);
             setExercisesCount(exercisesData.exercises.length);
+
+            // Fetch trainers count
+            const { data: trainersData } = await axios.get(`http://localhost:8000/api/v1/availTrainer/get-all-trainers`);
+            setTrainersCount(trainersData.length);
 
             setLoading(false);
         } catch (error) {
@@ -99,16 +104,23 @@ const Dashboard = () => {
                         {renderStatCard(
                             'Branches',
                             branchesCount,
-                            <Store sx={{ fontSize: 40 }} />, 
+                            <Store sx={{ fontSize: 40 }} />,
                             'linear-gradient(to right, #ff9800, #ffb74d)',
                             '/admin/branches'
                         )}
                         {renderStatCard(
                             'Exercises',
                             exercisesCount,
-                            <FitnessCenter sx={{ fontSize: 40 }} />, // 🏋️‍♂️ FitnessCenter icon for exercises
+                            <FitnessCenter sx={{ fontSize: 40 }} />,
                             'linear-gradient(to right, #4caf50, #81c784)',
-                            '/admin/exercises' // Navigates to Exercises List page
+                            '/admin/exercises'
+                        )}
+                        {renderStatCard(
+                            'Trainers',
+                            trainersCount,
+                            <Person sx={{ fontSize: 40 }} />, // 👤 Person icon for trainers
+                            'linear-gradient(to right, #9c27b0, #ba68c8)',
+                            '/admin/trainers' // Navigates to Trainers List page
                         )}
                     </Grid>
                 )}

@@ -36,6 +36,10 @@ import UpdateBranch from './Components/Admin/Branch/UpdateBranch';
 import ExerciseList from './Components/Admin/Exercise/ExerciseList';
 import CreateExercise from './Components/Admin/Exercise/CreateExercise';
 import UpdateExercise from './Components/Admin/Exercise/UpdateExercise';
+//Admin/Trainer
+import TrainerList from './Components/Admin/Trainer/TrainerList';
+import CreateTrainer from './Components/Admin/Trainer/CreateTrainer';
+import UpdateTrainer from './Components/Admin/Trainer/UpdateTrainer';
 
 //utils
 import ProtectedRoute from './Components/Route/ProtectedRoute';
@@ -51,6 +55,10 @@ function App() {
   };
 
   const handleExerciseCreated = () => {
+    setRefresh((prev) => !prev); // Toggle refresh state
+  };
+
+  const handleTrainerCreated = () => {
     setRefresh((prev) => !prev); // Toggle refresh state
   };
 
@@ -99,6 +107,10 @@ function App() {
                   <Route path="create-exercises" element={<CreateExercise onExerciseCreated={handleExerciseCreated} />} />
                   <Route path="update-exercise/:id" element={<UpdateExercise />} />
 
+                   {/* Exercise Routes */}
+                  <Route path="trainers" element={<TrainerList refresh={refresh} />} />
+                  <Route path="create-trainer" element={<CreateTrainer onTrainerCreated={handleTrainerCreated} />} />
+                  <Route path="update-trainer/:id" element={<UpdateTrainer />} />
 
                 </Routes>
               </ProtectedRoute>

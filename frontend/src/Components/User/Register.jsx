@@ -57,7 +57,7 @@ const Register = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const { data } = await axios.get("http://localhost:8000/api/v1/branch/get-branches");
+        const { data } = await axios.get("http://localhost:8000/api/v1/branch/get-all-branches");
         setBranches(data.branch);
       } catch (error) {
         toast.error("Failed to load branches");

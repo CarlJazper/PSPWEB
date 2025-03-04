@@ -30,7 +30,7 @@ const ExerciseList = () => {
   const fetchExercises = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/exercises/get-exercise");
+      const response = await axios.get("http://localhost:8000/api/v1/exercises/get-all-exercise");
       setExercises(response.data.exercises);
     } catch (error) {
       console.error("Error fetching exercises", error);
