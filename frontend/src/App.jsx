@@ -13,8 +13,8 @@ import Memberships from './Components/Memberships';
 import Map from './Components/Map';
 
 //Auth
-import Register from './Components/User/Register';
-import Login from './Components/User/Login';
+import Register from './Components/User/Auth/Register';
+import Login from './Components/User/Auth/Login';
 
 //User
 import Profile from './Components/User/Profile';

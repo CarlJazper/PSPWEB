@@ -19,7 +19,7 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MetaData from "../Layout/MetaData";
+import MetaData from "../../Layout/MetaData";
 
 // Validation Schema
 const schema = yup.object().shape({

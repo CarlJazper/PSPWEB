@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Grid, Paper, CircularProgress, Link as MUILink } from '@mui/material';
-import MetaData from '../Layout/MetaData';
+import MetaData from '../../Layout/MetaData';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { authenticate, getUser } from '../../utils/helpers';
+import { authenticate, getUser } from '../../../utils/helpers';
 
 const Login = () => {
     const navigate = useNavigate();
