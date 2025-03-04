@@ -86,7 +86,6 @@ const UsersList = () => {
   const deleteUserHandler = (id) => deleteUser(id);
 
   const columns = [
-    { name: 'User ID', selector: (row) => row._id.slice(-6), sortable: true },
     { name: 'Name', selector: (row) => row.name, sortable: true },
     { name: 'Email', selector: (row) => row.email, sortable: true },
     { name: 'Role', selector: (row) => row.role, sortable: true },
@@ -129,9 +128,14 @@ const UsersList = () => {
             <option value="coach">Coach</option>  
             <option value="client">Client</option>  
           </select>
-          <button onClick={handleExportCSV} className="export-btn">
-            <FaDownload size={18} /> Export Selected CSV
+          <button 
+              onClick={handleExportCSV} 
+              className={`export-btn ${!selectedUsers.length ? 'disabled' : ''}`} 
+               disabled={!selectedUsers.length}
+            >
+             <FaDownload size={18} /> Export Selected CSV
           </button>
+
         </div>
         {loading ? <Loader /> : 
           <DataTable 
@@ -200,6 +204,11 @@ h1 {
 
 .export-btn:hover, .delete-selected-btn:hover {
   background-color: #218838;
+}
+
+.export-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 .actions {

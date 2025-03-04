@@ -25,7 +25,7 @@ const UpdateUser = () => {
 
     const getUserDetails = async (id) => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API}/admin/user/${id}`, config);
+            const { data } = await axios.get(`https://pspmobile.onrender.com/api/v1/users/get-user/${id}`, config);
             setUser(data.user);
             setLoading(false);
         } catch (error) {
@@ -35,7 +35,7 @@ const UpdateUser = () => {
 
     const updateUser = async (id, userData) => {
         try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API}/admin/user/${id}`, userData, config);
+            const { data } = await axios.put(`https://pspmobile.onrender.com/api/v1/users/update/${id}`, userData, config);
             setIsUpdated(data.success);
             setLoading(false);
         } catch (error) {

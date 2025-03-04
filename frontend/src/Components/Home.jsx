@@ -69,15 +69,15 @@ const Home = () => {
                   lineHeight: 1.8
                 }}
               >
-                Join our state-of-the-art fitness facility and start your journey
-                towards a healthier, stronger you. Expert trainers, modern equipment,
-                and personalized programs await.
+                “Lift heavy, live light.”<br/>
+                By training hard, you make your mind and body lighter, stronger, and healthier.  
+                It helps you literally feel lighter and healthier in your daily life.
               </Typography>
 
               <Box sx={{ display: "flex", gap: 2 }}>
   <Button
-    component={Link} // 👈 This makes Button behave like a Link
-    to="/login" // 👈 Redirects to /login
+    component={Link}
+    to="/login"
     variant="contained"
     size="large"
     startIcon={<FitnessCenterIcon />}
@@ -93,6 +93,8 @@ const Home = () => {
     Start Now
   </Button>
                 <Button
+                  component={Link}
+                  to="/memberships"
                   variant="outlined"
                   size="large"
                   sx={{
