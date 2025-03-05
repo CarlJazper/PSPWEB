@@ -30,6 +30,9 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
+import baseURL from "../../../utils/baseUrl";
+
+
 const TrainerList = () => {
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +46,7 @@ const TrainerList = () => {
   const fetchTrainers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:8000/api/v1/availTrainer/get-all-trainers");
+      const response = await axios.get(`${baseURL}/availTrainer/get-all-trainers`);
       setTrainers(response.data);
     } catch (error) {
       console.error("Error fetching trainers:", error);
@@ -60,7 +63,7 @@ const TrainerList = () => {
     if (!window.confirm("Are you sure you want to delete this trainer?")) return;
 
     try {
-      await axios.delete(`http://localhost:8000/api/v1/availTrainer/delete-trainer/${id}`);
+      await axios.delete(`${baseURL}/availTrainer/delete-trainer/${id}`);
       setTrainers(trainers.filter((trainer) => trainer._id !== id));
     } catch (error) {
       console.error("Error deleting trainer:", error);

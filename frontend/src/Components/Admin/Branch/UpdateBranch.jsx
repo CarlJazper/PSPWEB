@@ -10,6 +10,8 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SaveIcon from "@mui/icons-material/Save";
 
+import baseURL from "../../../utils/baseUrl";
+
 const UpdateBranch = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ const UpdateBranch = () => {
   const fetchBranchDetails = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:8000/api/v1/branch/get-branch/${id}`);
+      const response = await axios.get(`${baseURL}/branch/get-branch/${id}`);
       setBranch(response.data.branch);
     } catch (error) {
       console.error("Error fetching branch details", error);
@@ -58,7 +60,7 @@ const UpdateBranch = () => {
     e.preventDefault();
     setUpdating(true);
     try {
-      await axios.put(`http://localhost:8000/api/v1/branch/update-branch/${id}`, branch);
+      await axios.put(`${baseURL}/branch/update-branch/${id}`, branch);
       setSnackbar({
         open: true,
         message: "Branch updated successfully!",

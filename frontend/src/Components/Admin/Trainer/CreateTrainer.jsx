@@ -17,6 +17,9 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
+import baseURL from "../../../utils/baseUrl";
+
+
 const CreateTrainer = () => {
   const [users, setUsers] = useState([]);
   const [formData, setFormData] = useState({
@@ -49,7 +52,7 @@ const CreateTrainer = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/users/get-all-users");
+      const res = await axios.get(`${baseURL}/users/get-all-users`);
       setUsers(Array.isArray(res.data.users) ? res.data.users : []);
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -99,7 +102,7 @@ const CreateTrainer = () => {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:8000/api/v1/availTrainer/create-trainer", formData);
+      await axios.post(`${baseURL}/availTrainer/create-trainer`, formData);
       setSnackbar({
         open: true,
         message: "Trainer created successfully!",

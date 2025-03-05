@@ -14,6 +14,9 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import WorkIcon from "@mui/icons-material/Work";
 
+import baseURL from "../../../utils/baseUrl";
+
+
 const UpdateTrainer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -45,7 +48,7 @@ const UpdateTrainer = () => {
 
   const fetchTrainerDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/v1/availTrainer/get-trainer/${id}`);
+      const response = await axios.get(`${baseURL}/availTrainer/get-trainer/${id}`);
       const trainerData = response.data;
       const formattedDate = trainerData.birthdate
         ? new Date(trainerData.birthdate).toISOString().split("T")[0]
@@ -76,7 +79,7 @@ const UpdateTrainer = () => {
     setUpdating(true);
     try {
       await axios.put(
-        `http://localhost:8000/api/v1/availTrainer/update-trainer/${id}`,
+        `${baseURL}/availTrainer/update-trainer/${id}`,
         formData
       );
       setSnackbar({

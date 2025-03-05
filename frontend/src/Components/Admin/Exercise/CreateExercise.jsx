@@ -13,6 +13,9 @@ import BuildIcon from "@mui/icons-material/Build";
 import SpeedIcon from "@mui/icons-material/Speed";
 import DescriptionIcon from "@mui/icons-material/Description";
 
+import baseURL from "../../../utils/baseUrl";
+
+
 const CreateExercise = ({ onExerciseCreated }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -77,7 +80,7 @@ const CreateExercise = ({ onExerciseCreated }) => {
     });
 
     try {
-      await axios.post("http://localhost:8000/api/v1/exercises/create-exercise", data, {
+      await axios.post(`${baseURL}/exercises/create-exercise`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setSnackbar({

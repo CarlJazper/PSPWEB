@@ -27,6 +27,9 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import SportsGymnasticsIcon from "@mui/icons-material/SportsGymnastics";
 
+import baseURL from "../../../utils/baseUrl";
+
+
 const ExerciseList = () => {
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -39,7 +42,7 @@ const ExerciseList = () => {
   const fetchExercises = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:8000/api/v1/exercises/get-all-exercise");
+      const response = await axios.get(`${baseURL}/exercises/get-all-exercise`);
       setExercises(response.data.exercises);
     } catch (error) {
       console.error("Error fetching exercises", error);
@@ -51,7 +54,7 @@ const ExerciseList = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this exercise?")) {
       try {
-        await axios.delete(`http://localhost:8000/api/v1/exercises/delete-exercise/${id}`);
+        await axios.delete(`${baseURL}/exercises/delete-exercise/${id}`);
         setExercises(exercises.filter((exercise) => exercise._id !== id));
       } catch (error) {
         console.error("Error deleting exercise", error);

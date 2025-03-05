@@ -14,6 +14,9 @@ import BuildIcon from "@mui/icons-material/Build";
 import SpeedIcon from "@mui/icons-material/Speed";
 import DescriptionIcon from "@mui/icons-material/Description";
 
+import baseURL from "../../../utils/baseUrl";
+
+
 const UpdateExercise = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,7 +46,7 @@ const UpdateExercise = () => {
 
   const fetchExerciseDetails = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/v1/exercises/get-exercise/${id}`);
+      const res = await axios.get(`${baseURL}/exercises/get-exercise/${id}`);
       const data = res.data.exercise;
       setExercise({
         ...data,
@@ -93,7 +96,7 @@ const UpdateExercise = () => {
 
     try {
       await axios.put(
-        `http://localhost:8000/api/v1/exercises/update-exercise/${id}`,
+        `${baseURL}/exercises/update-exercise/${id}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

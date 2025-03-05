@@ -10,6 +10,8 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveIcon from "@mui/icons-material/Save";
 
+import baseURL from "../../../utils/baseUrl";
+
 const CreateBranch = ({ onBranchCreated }) => {
   const [formData, setFormData] = useState({
     name: "",
@@ -35,7 +37,7 @@ const CreateBranch = ({ onBranchCreated }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post("http://localhost:8000/api/v1/branch/create-branch", formData);
+      await axios.post(`${baseURL}/branch/create-branch`, formData);
       setSnackbar({
         open: true,
         message: "Branch created successfully!",
