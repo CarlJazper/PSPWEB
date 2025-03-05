@@ -12,9 +12,15 @@ import { authenticate } from '../../../utils/helpers';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { IconButton } from '@mui/material';
+import { useState } from 'react';
+
 
 const Login = () => {
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+
     const location = useLocation();
     const redirect = location.search ? new URLSearchParams(location.search).get('redirect') : '';
 
@@ -115,7 +121,7 @@ const Login = () => {
                                                 color: 'transparent',
                                             }}
                                         >
-                                            Welcome Back
+                                            Welcome to PSP
                                         </Typography>
                                     </Box>
 
@@ -163,7 +169,7 @@ const Login = () => {
                                                 render={({ field }) => (
                                                     <TextField
                                                         {...field}
-                                                        type="password"
+                                                        type={showPassword ? 'text' : 'password'}
                                                         fullWidth
                                                         placeholder="Password"
                                                         error={!!errors.password}
@@ -171,6 +177,15 @@ const Login = () => {
                                                         onChange={onChangeHandler('password')}
                                                         InputProps={{
                                                             startAdornment: <LockOutlinedIcon sx={{ mr: 1, color: 'rgba(255,255,255,0.7)' }} />,
+                                                            endAdornment: (
+                                                                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                                                    {showPassword ? (
+                                                                        <VisibilityOff sx={{ color: 'rgba(255,255,255,0.7)' }} /> // Change color here
+                                                                    ) : (
+                                                                        <Visibility sx={{ color: 'rgba(255,255,255,0.7)' }} /> // Change color here
+                                                                    )}
+                                                                </IconButton>
+                                                            ),
                                                             sx: {
                                                                 color: '#fff',
                                                                 '& .MuiOutlinedInput-notchedOutline': {
@@ -191,6 +206,7 @@ const Login = () => {
                                                     />
                                                 )}
                                             />
+
                                         </Box>
 
                                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>

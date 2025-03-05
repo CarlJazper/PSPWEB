@@ -24,6 +24,10 @@ import { toast } from "react-toastify";
 import MetaData from "../../Layout/MetaData";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { InputAdornment, IconButton } from "@mui/material";
+
 
 // Validation Schema
 const schema = yup.object().shape({
@@ -100,6 +104,12 @@ const Register = () => {
       setAvatar(file);
     }
   };
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+  
 
   return (
     <>
@@ -190,7 +200,8 @@ const Register = () => {
                       {[
                         { name: "name", label: "Name", type: "text" },
                         { name: "email", label: "Email", type: "email" },
-                        { name: "password", label: "Password", type: "password" },
+                        { name: "password", label: "Password", type: showPassword ? "text" : "password" },
+
                         { name: "birthDate", label: "Birth Date", type: "date" },
                         { name: "address", label: "Address", type: "text" },
                         { name: "city", label: "City", type: "text" },
@@ -214,6 +225,7 @@ const Register = () => {
                                   shrink: true,
                                   sx: { color: 'rgba(255,255,255,0.7)' }
                                 }}
+
                                 InputProps={{
                                   sx: {
                                     color: '#fff',
@@ -226,7 +238,21 @@ const Register = () => {
                                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                                       borderColor: '#4ECDC4',
                                     },
-                                  },
+                                  },   ...(field.name === 'password' && {
+                                    endAdornment: (
+                                      <InputAdornment position="end">
+                                        <IconButton
+                                          aria-label="toggle password visibility"
+                                          onClick={togglePasswordVisibility}
+                                          edge="end"
+                                          sx={{ color: 'rgba(255,255,255,0.7)' }}
+                                        >
+                                          {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                        </IconButton>
+                                      </InputAdornment>
+                                    ),
+                                  }),
+
                                 }}
                               />
                             )}

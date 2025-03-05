@@ -8,7 +8,7 @@ export const authenticate = (data, next) => {
     }
 
     if (data.user && data.user.role === 'admin') {
-        next('/dashboard'); // Redirect to the dashboard if the user is an admin
+        next('/admin/dashboard'); // Redirect to the dashboard if the user is an admin
     } else {
         next(); // Default redirect if not admin
     }
