@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const logsSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'users',
         required: true,
     },
     timeIn: {
@@ -17,7 +17,7 @@ const logsSchema = new mongoose.Schema({
     },
     adminBranchId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'users',
         required: true,
     },
     date: {

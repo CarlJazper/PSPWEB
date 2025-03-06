@@ -40,6 +40,11 @@ import UpdateExercise from './Components/Admin/Exercise/UpdateExercise';
 import TrainerList from './Components/Admin/Trainer/TrainerList';
 import CreateTrainer from './Components/Admin/Trainer/CreateTrainer';
 import UpdateTrainer from './Components/Admin/Trainer/UpdateTrainer';
+//Admin/Reports
+import Reports from './Components/Admin/Reports/Reports';
+import MembershipSales from './Components/Admin/Reports/MembershipSales';
+import UserLogs from './Components/Admin/Reports/UserLogs';
+import LogCharts from './Components/Admin/Reports/LogCharts';
 
 //utils
 //import ProtectedRoute from './utils/ProtectedRoute';
@@ -112,6 +117,12 @@ function App() {
                   <Route path="trainers" element={<TrainerList refresh={refresh} />} />
                   <Route path="create-trainer" element={<CreateTrainer onTrainerCreated={handleTrainerCreated} />} />
                   <Route path="update-trainer/:id" element={<UpdateTrainer />} />
+
+                  {/* Report Routes */}
+                  <Route path="reports" element ={<Reports/>}/>
+                  <Route path="membership-sales" element={<MembershipSales/>}/>
+                  <Route path="user-logs" element={<UserLogs refresh={refresh}/>}/>
+                  <Route path="log-charts" element={<LogCharts/>}/>
 
                 </Routes>
               </ProtectedRoute>

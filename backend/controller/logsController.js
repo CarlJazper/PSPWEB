@@ -4,7 +4,7 @@ const Logs = require("../model/logs");
 const logsController = {
  getAllLogs: async (req, res) => {
         try {
-            const logs = await Logs.find()
+            const logs = await Logs.find().populate("userId", "name image");
             // console.log(exercise)
             res.status(201).json({ message: "Logs fetch successfully", logs });
         } catch (error) {
