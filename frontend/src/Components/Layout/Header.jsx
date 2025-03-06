@@ -47,7 +47,6 @@ const Header = () => {
         ? [
             { name: 'Dashboard', path: 'admin/dashboard' },
             { name: 'Reports', path: 'admin/reports' },
-            { name: 'Blogs', path: 'admin/blogs' },
             { name: 'Streams', path: 'admin/streams' },
         ]
         : [
@@ -55,7 +54,7 @@ const Header = () => {
             { name: user ? 'Classes' : 'Services', path: user ? '/classes' : '/services' },
             { name: 'Coaches', path: '/coaches' },
             { name: 'Memberships', path: '/memberships' },
-            { name: 'Blogs', path: '/blogs' },
+            { name: 'Exercises', path: '/exercises' },
             { name: 'Map', path: '/map' },
         ];
 
