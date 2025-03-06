@@ -4,7 +4,6 @@ import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { FaEdit, FaTrash, FaDownload } from 'react-icons/fa';
 import { getToken, errMsg, successMsg } from '../../../utils/helpers';
-import MetaData from '../../Layout/MetaData';
 import Loader from '../../Layout/Loader';
 import * as XLSX from 'xlsx'; 
 
@@ -106,7 +105,6 @@ const UsersList = () => {
 
   return (
     <>
-      <MetaData title="All Users" />
       <div className="users-container">
         <h1>All Users</h1>
         <div className="filters">

@@ -21,7 +21,6 @@ import {
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "react-toastify";
-import MetaData from "../../Layout/MetaData";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -113,7 +112,6 @@ const Register = () => {
 
   return (
     <>
-      <MetaData title={"Register User"} />
       <Box sx={{ minHeight: '100vh', py: 4 }}>
         <Container maxWidth="lg">
           <Grid container spacing={4} justifyContent="center">

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import MetaData from '../../Layout/MetaData';
 import { Box, TextField, Button, CircularProgress, Grid, Typography, MenuItem, FormControl, InputLabel, Select, Container } from '@mui/material';
 import { errMsg, successMsg, getToken } from '../../../utils/helpers';
 import axios from 'axios';
@@ -74,7 +73,6 @@ const UpdateUser = () => {
 
     return (
         <>
-            <MetaData title={`Update User`} />
             <Box display="flex">
                 <Box component="main" flex={1} padding={3}>
                     <Container maxWidth="sm">

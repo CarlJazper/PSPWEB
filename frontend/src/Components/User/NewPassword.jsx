@@ -1,6 +1,5 @@
 import  {  useState, useEffect } from 'react'
 import { useNavigate, useParams } from "react-router-dom";
-import MetaData from '../Layout/MetaData'
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
@@ -53,7 +52,6 @@ const NewPassword = () => {
 
     return (
         <>
-            <MetaData title={'New Password Reset'} />
             <div className="row wrapper">
                 <div className="col-10 col-lg-5">
                     <form className="shadow-lg" onSubmit={submitHandler}>

@@ -88,7 +88,7 @@ function App() {
           <Route path="/me" element={<Profile />} exact="true" />
           <Route path="/me/update" element={<UpdateProfile />} exact="true" />
           <Route path="/password/update" element={<UpdatePassword />} />
-          <Route path="/password/forgot" element={<ForgotPassword />} exact="true" />
+          <Route path="password/forgot" element={<ForgotPassword />} exact="true" />
           <Route path="/password/reset/:token" element={<NewPassword />} exact="true" />
 
           {/* Admin */}

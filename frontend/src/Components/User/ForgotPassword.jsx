@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import MetaData from '../Layout/MetaData';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button, CircularProgress, Grid, Typography, Container } from '@mui/material';
+import baseURL from "../../utils/baseUrl";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -19,7 +19,7 @@ const ForgotPassword = () => {
             }
         };
         try {
-            const { data } = await axios.post(`http://localhost:4001/api/v1/password/forgot`, formData, config);
+            const { data } = await axios.post(`${baseURL}/password/forgot`, formData, config);
             console.log(data.message);
 
             setLoading(false);
@@ -43,7 +43,6 @@ const ForgotPassword = () => {
 
     return (
         <>
-            <MetaData title={'Forgot Password'} />
             <Container maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <Box 
                     sx={{ 

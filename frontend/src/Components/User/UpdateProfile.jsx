@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import MetaData from '../Layout/MetaData';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -102,7 +101,6 @@ const UpdateProfile = () => {
 
     return (
         <>
-            <MetaData title={'Update Profile'} />
             <Box
                 display="flex"
                 justifyContent="center"

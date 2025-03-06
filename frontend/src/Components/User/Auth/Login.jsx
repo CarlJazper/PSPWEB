@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Box, Typography, TextField, Button, Grid, Paper, Link as MUILink, Container } from '@mui/material';
 import { motion } from 'framer-motion';
-import MetaData from '../../Layout/MetaData';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { useForm, Controller } from 'react-hook-form';
@@ -66,7 +65,6 @@ const Login = () => {
 
     return (
         <>
-            <MetaData title={'Login'} />
             <Box
                 sx={{
                     minHeight: '100vh',
@@ -211,7 +209,7 @@ const Login = () => {
 
                                         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
                                             <MUILink
-                                                href="/password/forgot"
+                                                href="password/forgot"
                                                 sx={{
                                                     color: '#4ECDC4',
                                                     textDecoration: 'none',

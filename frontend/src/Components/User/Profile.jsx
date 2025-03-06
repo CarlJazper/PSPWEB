@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Loader from '../Layout/Loader';
-import MetaData from '../Layout/MetaData';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -40,7 +39,6 @@ const Profile = () => {
 
     return (
         <>
-            <MetaData title="Your Profile" />
             <Box sx={{ padding: 3 }}>
                 <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', fontWeight: 'bold' }}>
                     My Profile
