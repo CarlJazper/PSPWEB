@@ -16,11 +16,11 @@ const LocationSection = () => {
     },
     {
       url: `${import.meta.env.BASE_URL}/images/map-page-2.jpg`,
-      title: "Building Exterior"
+      title: "Gym Equipments"
     },
     {
       url: `${import.meta.env.BASE_URL}/images/map-page-3.jpg`,
-      title: "Landmark View"
+      title: "Gym Equipments"
     }
   ];
 

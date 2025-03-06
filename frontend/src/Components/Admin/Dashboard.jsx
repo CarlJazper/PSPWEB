@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Grid, Card, CardContent, Typography, Button, CircularProgress, Divider } from '@mui/material';
 import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
-
-import MetaData from '../Layout/MetaData';
 import { getToken } from '../../utils/helpers';
 import axios from 'axios';
 
@@ -84,7 +82,6 @@ const Dashboard = () => {
     return (
         <Box display="flex">
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                <MetaData title="Admin Dashboard" />
                 <Typography variant="h4" sx={{ mb: 4, textAlign: 'center' }}>
                     Dashboard
                 </Typography>
