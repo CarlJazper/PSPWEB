@@ -67,7 +67,7 @@ const Header = () => {
                 <Box sx={{ width: 60, height: 60, borderRadius: '50%', overflow: 'hidden' }}>
                 <Link to={user?.role === 'admin' ? "/dashboard" : "/"}>
                         <img 
-                            src="./images/psp-logo.png" 
+                            src={`${import.meta.env.BASE_URL}/images/psp-logo.png`} 
                             alt="Logo" 
                             width="100%" 
                             height="100%" 

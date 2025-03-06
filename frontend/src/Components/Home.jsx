@@ -138,7 +138,7 @@ const Home = () => {
               >
                 <Box
                   component="img"
-                  src="/images/home-img-1.jpeg"
+                  src={`${import.meta.env.BASE_URL}/images/home-img-1.jpeg`}
                   alt="Fitness Training"
                   sx={{
                     width: '100%',
@@ -166,7 +166,7 @@ const Home = () => {
               >
                 <Box
                   component="img"
-                  src="/images/home-img-2.jpg"
+                  src={`${import.meta.env.BASE_URL}/images/home-img-2.jpg`}
                   alt="Exercise benefits"
                   sx={{
                     width: '100%',

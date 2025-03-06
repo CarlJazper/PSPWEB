@@ -65,7 +65,7 @@ function App() {
 
   return (
     <>
-      <Router>
+      <Router basename='PSP'>
         <Header />
         <Routes>
           {/* Guest */}

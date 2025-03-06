@@ -2,7 +2,7 @@
 body {
     background-image: 
       linear-gradient(to right, rgba(43, 33, 0, 0.966), rgba(29, 20, 0, 0.911), rgb(0, 0, 0)),
-      url('/public/images/bg-img.jpg');
+      url('/images/bg-img.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

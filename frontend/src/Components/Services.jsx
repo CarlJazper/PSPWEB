@@ -11,28 +11,28 @@ const Services = () => {
   const services = [
     {
       title: 'Fitness Equipment',
-      image: '/images/service-img-1.jpg',
+      image: `${import.meta.env.BASE_URL}/images/service-img-1.jpg`,
       icon: <FitnessCenterIcon sx={{ fontSize: 35, color: '#fff' }} />,
       description: 'Top-of-the-line gym equipment designed for all fitness levels.',
       gradient: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
     },
     {
       title: 'Personal Trainer',
-      image: '/images/service-img-2.jpg',
+      image: `${import.meta.env.BASE_URL}/images/service-img-2.jpg`,
       icon: <SelfImprovementIcon sx={{ fontSize: 35, color: '#fff' }} />,
       description: 'Expert trainers to guide you towards your fitness goals.',
       gradient: 'linear-gradient(135deg, #4ECDC4, #45B7AF)',
     },
     {
       title: 'Online Classes',
-      image: '/images/service-img-3.jpg',
+      image: `${import.meta.env.BASE_URL}/images/service-img-3.jpg`,
       icon: <VideocamIcon sx={{ fontSize: 35, color: '#fff' }} />,
       description: 'Access live and on-demand fitness classes from the comfort of home.',
       gradient: 'linear-gradient(135deg, #A66CFF, #9C55FF)',
     },
     {
       title: 'Health Assessment',
-      image: '/images/service-img-4.jpg',
+      image: `${import.meta.env.BASE_URL}/images/service-img-4.jpg`,
       icon: <HealthAndSafetyIcon sx={{ fontSize: 35, color: '#fff' }} />,
       description: 'Comprehensive assessments to track your health and progress.',
       gradient: 'linear-gradient(135deg, #3EECAC, #3BE9AA)',
@@ -129,6 +129,8 @@ const Services = () => {
                           height: '100%',
                           width: '100%',
                           objectFit: 'cover',
+                          borderTopLeftRadius: 16,
+                          borderTopRightRadius: 16,
                         }}
                       />
                       <Box
@@ -139,6 +141,8 @@ const Services = () => {
                           left: 0,
                           right: 0,
                           bottom: 0,
+                          borderTopLeftRadius: 16,
+                          borderTopRightRadius: 16,
                           background: service.gradient,
                           opacity: 0,
                           transition: 'opacity 0.3s ease',

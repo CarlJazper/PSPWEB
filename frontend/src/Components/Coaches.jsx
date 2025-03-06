@@ -21,28 +21,28 @@ const Coaches = () => {
   const coaches = [
     { 
       title: 'Richard Picar',
-      image: '/images/coach-1.jpg',
+      image: `${import.meta.env.BASE_URL}/images/coach-1.jpg`,
       specialty: 'Strength & Conditioning',
-      experience: '8+ Years Experience',
+      experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
     },
     { 
       title: 'Emilie Reyes',
-      image: '/images/coach-2.jpg',
+      image: `${import.meta.env.BASE_URL}/images/coach-2.jpg`,
       specialty: 'Yoga & Flexibility',
       experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #4ECDC4, #45B7AF)',
     },
     { 
       title: 'Joshua Pascaldo',
-      image: '/images/coach-3.jpg',
+      image: `${import.meta.env.BASE_URL}/images/coach-3.jpg`,
       specialty: 'CrossFit Expert',
       experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #A66CFF, #9C55FF)',
     },
     { 
       title: 'Brian Mendez',
-      image: '/images/coach-4.jpg',
+      image: `${import.meta.env.BASE_URL}/images/coach-4.jpg`,
       specialty: 'Nutrition Specialist',
       experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #3EECAC, #3BE9AA)',

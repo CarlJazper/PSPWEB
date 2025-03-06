@@ -11,15 +11,15 @@ const LocationSection = () => {
 
   const images = [
     {
-      url: "/images/map-page-1.jpg",
+      url: `${import.meta.env.BASE_URL}/images/map-page-1.jpg`,
       title: "Main Entrance"
     },
     {
-      url: "/images/map-page-2.jpg",
+      url: `${import.meta.env.BASE_URL}/images/map-page-2.jpg`,
       title: "Building Exterior"
     },
     {
-      url: "/images/map-page-3.jpg",
+      url: `${import.meta.env.BASE_URL}/images/map-page-3.jpg`,
       title: "Landmark View"
     }
   ];
