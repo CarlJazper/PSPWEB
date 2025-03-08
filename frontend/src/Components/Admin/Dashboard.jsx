@@ -4,6 +4,7 @@ import { Box, Grid, Card, CardContent, Typography, Button, CircularProgress, Div
 import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
 import { getToken } from '../../utils/helpers';
 import axios from 'axios';
+import baseURL from "../../utils/baseUrl";
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);
@@ -17,19 +18,19 @@ const Dashboard = () => {
             const config = { headers: { Authorization: `Bearer ${getToken()}` } };
 
             // Fetch users count
-            const { data: usersData } = await axios.get(`https://pspmobile.onrender.com/api/v1/users/get-all-users`, config);
+            const { data: usersData } = await axios.get(`${baseURL}/users/get-all-users`, config);
             setAllUsers(usersData.users);
 
             // Fetch branches count
-            const { data: branchesData } = await axios.get(`http://localhost:8000/api/v1/branch/get-all-branches`);
+            const { data: branchesData } = await axios.get(`${baseURL}/branch/get-all-branches`);
             setBranchesCount(branchesData.branch.length);
 
             // Fetch exercises count
-            const { data: exercisesData } = await axios.get(`http://localhost:8000/api/v1/exercises/get-all-exercise`);
+            const { data: exercisesData } = await axios.get(`${baseURL}/exercises/get-all-exercise`);
             setExercisesCount(exercisesData.exercises.length);
 
             // Fetch trainers count
-            const { data: trainersData } = await axios.get(`http://localhost:8000/api/v1/availTrainer/get-all-trainers`);
+            const { data: trainersData } = await axios.get(`${baseURL}/availTrainer/get-all-trainers`);
             setTrainersCount(trainersData.length);
 
             setLoading(false);

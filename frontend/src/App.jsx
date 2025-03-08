@@ -45,13 +45,14 @@ import Reports from './Components/Admin/Reports/Reports';
 import MembershipSales from './Components/Admin/Reports/MembershipSales';
 import UserLogs from './Components/Admin/Reports/UserLogs';
 import LogCharts from './Components/Admin/Reports/LogCharts';
-
+import GymMonitoring from './Components/Admin/Reports/GymMonitoring';
 //utils
 //import ProtectedRoute from './utils/ProtectedRoute';
 import ProtectedRoute from './utils/ProtectedRoute';
 
 //layouts
 import Header from './Components/Layout/Header'
+
 
 function App() {
   const [refresh, setRefresh] = useState(false);
@@ -123,6 +124,7 @@ function App() {
                   <Route path="membership-sales" element={<MembershipSales/>}/>
                   <Route path="user-logs" element={<UserLogs refresh={refresh}/>}/>
                   <Route path="log-charts" element={<LogCharts/>}/>
+                  <Route path="gym-monitoring" element={<GymMonitoring/>}/>
 
                 </Routes>
               </ProtectedRoute>

@@ -14,7 +14,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
-
+import baseURL from "../../../utils/baseUrl";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -47,7 +47,7 @@ const Login = () => {
                     'Content-Type': 'application/json',
                 },
             };
-            const response = await axios.post(`https://pspmobile.onrender.com/api/v1/users/login`, { email, password }, config);
+            const response = await axios.post(`${baseURL}/users/login`, { email, password }, config);
             authenticate(response.data, (redirectPath) => navigate(redirect || redirectPath || '/'));
         } catch (error) {
             toast.error('Invalid user or password', {

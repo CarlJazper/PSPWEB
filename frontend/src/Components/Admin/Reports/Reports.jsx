@@ -3,6 +3,7 @@ import { Container, Typography, Box } from '@mui/material';
 import LogCharts from './LogCharts';
 import UserLog from './UserLogs';
 import MembershipSales from './MembershipSales';
+import GymMonitoring from './GymMonitoring';
 
 const Report = () => {
     return (
@@ -15,6 +16,12 @@ const Report = () => {
                     Log Charts
                 </Typography>
                 <LogCharts />
+            </Box>
+            <Box>
+                <Typography variant="h5" gutterBottom>
+                    Gym Monitoring
+                </Typography>
+                <GymMonitoring />
             </Box>
             <Box sx={{ mb: 4 }}>
                 <Typography variant="h5" gutterBottom>
