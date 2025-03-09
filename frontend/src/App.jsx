@@ -52,6 +52,7 @@ import ProtectedRoute from './utils/ProtectedRoute';
 
 //layouts
 import Header from './Components/Layout/Header'
+import Exercise from './Components/Exercises';
 
 
 function App() {
@@ -80,6 +81,7 @@ function App() {
           <Route path="/services" element={<Services />} />
           <Route path="/memberships" element={<Memberships />} />
           <Route path="/map" element={<Map />} />
+          <Route path="/exercises" element={<Exercise/>}/>
 
           {/* Auth */}
           <Route path="/login" element={<Login />} exact="true" />

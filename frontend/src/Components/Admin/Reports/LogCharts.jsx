@@ -3,6 +3,7 @@ import { Container, Typography, CircularProgress, Box } from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar, PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { format, parseISO, differenceInMinutes } from 'date-fns';
+import baseURL from "../../../utils/baseUrl";
 
 const COLORS = ["#FFAC1C", "#8884d8", "#82ca9d", "#a678de", "#FF8042", "#f44336", "#9c27b0", "#673ab7", "#3f51b5"];
 
@@ -19,8 +20,8 @@ const LogCharts = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const logsResponse = await axios.get("http://localhost:8000/api/v1/logs/get-all-logs");
-                const usersResponse = await axios.get("http://localhost:8000/api/v1/users/get-all-users");
+                const logsResponse = await axios.get(`${baseURL}/logs/get-all-logs`);
+                const usersResponse = await axios.get(`${baseURL}/users/get-all-users`);
 
                 setLogs(logsResponse.data.logs);
                 setUsers(usersResponse.data.users);
@@ -168,7 +169,7 @@ const LogCharts = () => {
 
                 {/* Pie Chart - Active vs. Inactive Users */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Active vs. Inactive Users</Typography>
+                    <Typography variant="h6" color="white" mb={1}>Active Users inside gym</Typography>
                     <ResponsiveContainer width="100%" height={400}>
                         <PieChart>
                             <Pie data={activeInactiveData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>

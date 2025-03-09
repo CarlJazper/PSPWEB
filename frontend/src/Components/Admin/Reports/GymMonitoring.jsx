@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, List, ListItem, ListItemText, Chip } from '@mui/material';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
+import baseURL from "../../../utils/baseUrl";
 
 const GymMonitoring = () => {
     const [activeSessions, setActiveSessions] = useState([]);
@@ -11,8 +12,8 @@ const GymMonitoring = () => {
     const fetchData = async () => {
         try {
             const [logsRes, usersRes] = await Promise.all([
-                axios.get("http://localhost:8000/api/v1/logs/get-all-logs"),
-                axios.get("http://localhost:8000/api/v1/users/get-all-users")
+                axios.get(`${baseURL}/logs/get-all-logs`),
+                axios.get(`${baseURL}/users/get-all-users`)
             ]);
             
             const active = logsRes.data.logs.filter(log => !log.timeOut);
@@ -41,7 +42,7 @@ const GymMonitoring = () => {
     return (
         <Box sx={{ background: 'rgba(255, 255, 255, 0.1)', p: 2, borderRadius: 2 }}>
             <Typography variant="h6" color="white" mb={2}>
-                🏋️ Real-Time Gym Activity
+                Current Users in Gym
             </Typography>
             
             <Box sx={{ display: 'flex', gap: 3, mb: 3 }}>

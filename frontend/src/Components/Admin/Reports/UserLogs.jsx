@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Avatar } from "@mui/material";
 import axios from "axios";
+import baseURL from "../../../utils/baseUrl";
 
 const Logs = () => {
     const [logs, setLogs] = useState([]);
@@ -8,7 +9,7 @@ const Logs = () => {
 
     useEffect(() => {
         console.log("Fetching logs...");
-        axios.get("http://localhost:8000/api/v1/logs/get-all-logs")
+        axios.get(`${baseURL}/logs/get-all-logs`)
             .then(response => {
                 console.log("Logs response:", response.data);
                 setLogs(response.data.logs);

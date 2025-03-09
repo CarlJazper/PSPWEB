@@ -4,7 +4,7 @@ const Transaction = require("../model/transaction");
 const transactionController = {
     getAllTransactions: asyncHandler(async (req, res) => {
     try {
-      const transactions = await Transaction.find()
+      const transactions = await Transaction.find().populate("userId", "name email")
       // console.log(exercise)
       res.status(201).json({ message: "Transactions fetch successfully", transactions });
     } catch (error) {
