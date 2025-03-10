@@ -41,7 +41,7 @@ const GymMonitoring = () => {
 
     return (
         <Box sx={{ background: 'rgba(255, 255, 255, 0.1)', p: 2, borderRadius: 2 }}>
-            <Typography variant="h6" color="white" mb={2}>
+            <Typography variant="h6" color="black" mb={2}>
                 Current Users in Gym
             </Typography>
             
@@ -54,7 +54,7 @@ const GymMonitoring = () => {
                 />
             </Box>
 
-            <Typography variant="subtitle1" color="white" mb={2}>
+            <Typography variant="subtitle1" color="black" mb={2}>
                 Currently Active Users ({getActiveUsers().length}):
             </Typography>
             

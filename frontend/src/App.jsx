@@ -52,6 +52,7 @@ import ProtectedRoute from './utils/ProtectedRoute';
 
 //layouts
 import Header from './Components/Layout/Header'
+//import Footer from './Components/Layout/Footer'
 import Exercise from './Components/Exercises';
 
 
