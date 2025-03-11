@@ -21,7 +21,7 @@ import { styled } from "@mui/material/styles";
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import baseURL from "../utils/baseUrl";
+import baseURL from "../utils/baseURL";
 
 // Styled components
 const StyledCard = styled(Card)(({ theme }) => ({

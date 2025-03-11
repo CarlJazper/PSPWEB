@@ -4,7 +4,7 @@ import DataTable from 'react-data-table-component';
 import axios from 'axios';
 import { FaEdit, FaTrash, FaDownload } from 'react-icons/fa';
 import { getToken, errMsg, successMsg } from '../../../utils/helpers';
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 import Loader from '../../Layout/Loader';
 import * as XLSX from 'xlsx'; 
 

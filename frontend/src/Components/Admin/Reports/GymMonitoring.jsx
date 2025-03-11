@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, CircularProgress, List, ListItem, ListItemText, Chip } from '@mui/material';
 import axios from 'axios';
 import { format, parseISO } from 'date-fns';
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 const GymMonitoring = () => {
     const [activeSessions, setActiveSessions] = useState([]);

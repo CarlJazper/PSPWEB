@@ -4,7 +4,7 @@ import { Box, Grid, Card, CardContent, Typography, Button, CircularProgress, Div
 import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
 import { getToken } from '../../utils/helpers';
 import axios from 'axios';
-import baseURL from "../../utils/baseUrl";
+import baseURL from "../../utils/baseURL";
 
 const Dashboard = () => {
     const [loading, setLoading] = useState(true);

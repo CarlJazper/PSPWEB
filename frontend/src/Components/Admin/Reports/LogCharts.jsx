@@ -3,7 +3,7 @@ import { Container, Typography, CircularProgress, Box } from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar, PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { format, parseISO, differenceInMinutes } from 'date-fns';
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 const COLORS = ["#FFAC1C", "#8884d8", "#82ca9d", "#a678de", "#FF8042", "#f44336", "#9c27b0", "#673ab7", "#3f51b5"];
 

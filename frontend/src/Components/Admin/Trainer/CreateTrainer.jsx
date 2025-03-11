@@ -17,7 +17,7 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 
 const CreateTrainer = () => {

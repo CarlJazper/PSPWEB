@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import { Box, TextField, Button, CircularProgress, Grid, Typography, Container } from '@mui/material';
-import baseURL from "../../utils/baseUrl";
+import baseURL from "../../utils/baseURL";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');

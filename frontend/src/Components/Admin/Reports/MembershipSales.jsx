@@ -4,7 +4,7 @@ import {
   Card, CardContent, Typography, CircularProgress, Grid, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow, Paper, MenuItem, Select, Box
 } from "@mui/material";
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 const MembershipSales = () => {
   const [salesData, setSalesData] = useState(null);

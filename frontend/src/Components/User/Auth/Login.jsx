@@ -14,7 +14,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 const Login = () => {
     const navigate = useNavigate();

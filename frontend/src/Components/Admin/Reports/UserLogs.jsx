@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Avatar } from "@mui/material";
 import axios from "axios";
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 const Logs = () => {
     const [logs, setLogs] = useState([]);
