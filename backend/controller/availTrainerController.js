@@ -1,6 +1,7 @@
 const AvailTrainer = require('../model/availTrainer');
 const User = require('../model/user')
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
+const { cloudinary, secretKey } = require('../config/cloudinaryConfig')
 
 // Create payment intent
 exports.createPaymentIntent = async (req, res) => {
@@ -35,46 +36,52 @@ exports.createPaymentIntent = async (req, res) => {
     }
 };
 
-//Create Trainer
+// Create a new trainer
 exports.createTrainer = async (req, res) => {
+    // console.log(req.body)
     try {
-        console.log("Received Data:", req.body); // Log incoming data
-
-        const { userId, sessions } = req.body;
-
-        if (!userId || !sessions) {
-            return res.status(400).json({ message: "User ID and sessions are required" });
-        }
-
-        // Find the user
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Update user role to trainer/coach
-        user.role = "coach";
-        await user.save();
-
-        // Initialize schedule
         req.body.schedule = [];
-        for (let i = 0; i < sessions; i++) {
+        for (let i = 0; i < req.body.sessions; i++) {
             req.body.schedule.push({
                 index: i + 1,
-                dateAssigned: null, // Placeholder for date
-                timeAssigned: null, // Placeholder for time
-                status: "pending",
+                dateAssigned: null,
+                timeAssigned: null,
+                status: 'pending',
+                trainings: [],
             });
         }
+        let signatureData = [];
+        if (req.body.signature) {
+            try {
+                const result = await cloudinary.uploader.upload(req.body.signature, {
+                    folder: "PSPCloudinaryData/users",
+                    width: 150,
+                    crop: "scale",
+                });
 
-        // Create trainer entry
-        const trainer = new AvailTrainer(req.body);
+                signatureData.push({
+                    public_id: result.public_id,
+                    url: result.secure_url,
+                });
+            } catch (uploadError) {
+                console.error("Cloudinary upload failed:", uploadError);
+                return res.status(500).json({ message: "Signature upload failed", error: uploadError.message });
+            }
+        }
+
+        const trainer = new AvailTrainer({
+            ...req.body,
+            signature: signatureData,
+        });
+
+        console.log("Trainer saved:", trainer);
         await trainer.save();
 
-        res.status(201).json({ message: "Trainer created successfully", trainer });
+
+        res.status(201).json({ message: 'Trainer created successfully', trainer });
     } catch (error) {
-        console.error("Error:", error);
-        res.status(400).json({ message: "Error creating trainer", error: error.message });
+        console.error("Error creating trainer:", error);
+        res.status(400).json({ message: 'Error creating trainer', error: error.message });
     }
 };
 
@@ -191,15 +198,17 @@ exports.getClientsAvailedServices = async (req, res,) => {
 exports.updateSessionSchedule = async (req, res,) => {
 
     try {
+        // console.log(req.body.trainings)
         const servicesAvailed = await AvailTrainer.findById(req.params.id);
 
         servicesAvailed.schedule = servicesAvailed.schedule.map(session => {
             if (session._id.toString() === req.query.sessionId) {
                 return {
-                    ...session._doc,  // Ensures document properties are spread correctly
+                    ...session._doc,
                     dateAssigned: req.body.date,
                     timeAssigned: req.body.time,
                     status: 'waiting',
+                    trainings: req.body.trainings || [],
                 };
             }
             return session;
@@ -256,12 +265,18 @@ exports.completeSessionSchedule = async (req, res,) => {
         servicesAvailed.schedule = servicesAvailed.schedule.map(session => {
             if (session._id.toString() === req.query.sessionId) {
                 return {
-                    ...session._doc,  // Ensures document properties are spread correctly
+                    ...session._doc,
                     status: 'completed',
                 };
             }
             return session;
         });
+
+        const allCompleted = servicesAvailed.schedule.every(session => session.status === 'completed');
+
+        if (allCompleted) {
+            servicesAvailed.status = 'inactive';
+        }
 
         await servicesAvailed.save();
 

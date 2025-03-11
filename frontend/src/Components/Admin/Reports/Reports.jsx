@@ -136,18 +136,18 @@ const Report = () => {
       color: '#2e7d32',
     },
     {
-      id: 'gym',
-      title: 'Gym Monitoring',
-      icon: <GymIcon />,
-      component: <GymMonitoring />,
-      color: '#1565c0',
-    },
-    {
       id: 'users',
       title: 'User Logs',
       icon: <UserIcon />,
       component: <UserLog />,
       color: '#7b1fa2',
+    },
+    {
+      id: 'gym',
+      title: 'Gym Monitoring',
+      icon: <GymIcon />,
+      component: <GymMonitoring />,
+      color: '#1565c0',
     },
     {
       id: 'sales',
