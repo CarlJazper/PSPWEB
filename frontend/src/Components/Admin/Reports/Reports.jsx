@@ -20,6 +20,7 @@ import {
   MonitorWeight as GymIcon,
   People as UserIcon,
   AttachMoney as SalesIcon,
+  Diversity3 as SessionIcon,
   Refresh as RefreshIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
@@ -27,6 +28,7 @@ import LogCharts from './LogCharts';
 import UserLog from './UserLogs';
 import MembershipSales from './MembershipSales';
 import GymMonitoring from './GymMonitoring';
+import TrainingSessions from './TrainingSession';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -108,6 +110,7 @@ const Report = () => {
     gym: true,
     users: true,
     sales: true,
+    sessions: true,
   });
 
   const handleTabChange = (event, newValue) => {
@@ -154,6 +157,13 @@ const Report = () => {
       title: 'Membership Sales',
       icon: <SalesIcon />,
       component: <MembershipSales />,
+      color: '#c62828',
+    },
+    {
+      id: 'sessions',
+      title: 'Training Sessions',
+      icon: <SessionIcon />,
+      component: <TrainingSessions />,
       color: '#c62828',
     },
   ];
