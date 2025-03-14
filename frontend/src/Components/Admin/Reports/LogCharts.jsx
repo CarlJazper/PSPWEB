@@ -107,7 +107,7 @@ const LogCharts = () => {
             <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
                 {/* Line Chart - Daily Activity */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Daily User Activity</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Daily User Activity</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={dailyActivityData}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -121,7 +121,7 @@ const LogCharts = () => {
 
                 {/* Bar Chart - Peak Gym Hours */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Peak Gym Hours</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Peak Gym Hours</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={peakHoursData}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -140,7 +140,7 @@ const LogCharts = () => {
 
                 {/* Bar Chart - User Check-in Frequency */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>User Check-in Frequency</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>User Check-in Frequency</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={userFrequencyData}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -159,7 +159,7 @@ const LogCharts = () => {
 
                 {/* Bar Chart - Average Session Duration */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Average Session Duration</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Average Session Duration</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={averageSessionData}>
                             <CartesianGrid strokeDasharray="3 3" />
@@ -175,7 +175,7 @@ const LogCharts = () => {
 
                 {/* Pie Chart - Active vs. Inactive Users */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Active Users Inside Gym</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Active Users Inside Gym</Typography>
                     <ResponsiveContainer width="100%" height={400}>
                         <PieChart>
                             <Pie data={activeInactiveData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
