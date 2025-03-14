@@ -43,13 +43,19 @@ const TrainingSessions = () => {
     fetchActiveUsers();
   }, []);
 
-  const formatDateTime = (dateString) => {
+  const formatDateOnly = (dateString) => {
     if (!dateString) return "Not scheduled";
-    return new Date(dateString).toLocaleString("en-US", {
+    return new Date(dateString).toLocaleDateString("en-US", {
       weekday: "short",
       year: "numeric",
       month: "short",
       day: "numeric",
+    });
+  };
+
+  const formatTimeOnly = (dateString) => {
+    if (!dateString) return "Not set";
+    return new Date(dateString).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
@@ -92,7 +98,7 @@ const TrainingSessions = () => {
                     {sessions.map((session, index) => (
                       <Typography key={index} color="textSecondary" sx={{ paddingLeft: 2 }}>
                         {session.dateAssigned
-                          ? `Session ${index + 1}: ${formatDateTime(session.dateAssigned)} - Ends at ${formatDateTime(session.timeAssigned)} - Status: ${session.status}`
+                          ? `Session ${index + 1}: ${formatDateOnly(session.dateAssigned)} - at ${formatTimeOnly(session.timeAssigned)} - Status: ${session.status}`
                           : `Session ${index + 1}: Not scheduled`}
                       </Typography>
                     ))}

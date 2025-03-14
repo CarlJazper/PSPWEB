@@ -57,6 +57,7 @@ const MembershipSales = () => {
       new Date(t.subscribedDate).getFullYear() === selectedMonthYear.year &&
       new Date(t.subscribedDate).getMonth() + 1 === selectedMonthYear.month
   );
+  const totalMonthlySales = monthlyTransactions.reduce((sum, t) => sum + t.amount, 0);
 
   const yearlyTransactions = transactions.all.filter(
     (t) => new Date(t.subscribedDate).getFullYear() === selectedYearlyYear
@@ -112,7 +113,15 @@ const MembershipSales = () => {
         </TableContainer>
 
         {/* Monthly Transactions */}
-        <Typography variant="h6" gutterBottom>Monthly Transactions</Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
+          <Typography variant="h6" gutterBottom>
+            Monthly Transactions
+          </Typography>
+          <Typography variant="h6" color="primary">
+            Total Sales for {new Date(0, selectedMonthYear.month - 1).toLocaleString("default", { month: "long" })} {selectedMonthYear.year}: {formatCurrency(totalMonthlySales)}
+          </Typography>
+        </Box>
+
         <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
           <Box sx={{ padding: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
             <Select
