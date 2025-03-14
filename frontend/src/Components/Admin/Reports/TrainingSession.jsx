@@ -98,7 +98,7 @@ const TrainingSessions = () => {
                     {sessions.map((session, index) => (
                       <Typography key={index} color="textSecondary" sx={{ paddingLeft: 2 }}>
                         {session.dateAssigned
-                          ? `Session ${index + 1}: ${formatDateOnly(session.dateAssigned)} - at ${formatTimeOnly(session.timeAssigned)} - Status: ${session.status}`
+                          ? `Session ${index + 1}: Scheduled for ${formatDateOnly(session.dateAssigned)} - at ${formatTimeOnly(session.timeAssigned)} - Status: ${session.status}`
                           : `Session ${index + 1}: Not scheduled`}
                       </Typography>
                     ))}
