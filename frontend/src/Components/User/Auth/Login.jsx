@@ -241,7 +241,7 @@ const Login = () => {
                                             </Button>
                                         </motion.div>
 
-                                        <Box sx={{ textAlign: 'center', mt: 3 }}>
+                                        {/* <Box sx={{ textAlign: 'center', mt: 3 }}>
                                             <Typography sx={{ color: 'rgba(255,255,255,0.7)' }}>
                                                 Don't have an account?{' '}
                                                 <Link
@@ -254,7 +254,7 @@ const Login = () => {
                                                     Sign Up
                                                 </Link>
                                             </Typography>
-                                        </Box>
+                                        </Box> */}
                                     </form>
                                 </Paper>
                             </motion.div>

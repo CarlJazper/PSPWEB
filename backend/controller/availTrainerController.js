@@ -94,7 +94,7 @@ exports.getAllTrainers = async (req, res) => {
         }).populate({
             path: 'coachID',
             model: 'users'
-        })
+        }).sort({ createdAt: -1 })
         res.status(200).json(trainers);
     } catch (error) {
         console.log(error)

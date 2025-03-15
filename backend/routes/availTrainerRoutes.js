@@ -5,7 +5,7 @@ const availTrainerController = require('../controller/availTrainerController');
 router.post('/create-trainer', availTrainerController.createTrainer);
 router.get('/get-all-trainers', availTrainerController.getAllTrainers);
 router.get('/get-trainer/:id', availTrainerController.getTrainerById);
-router.put('/update-trainer/:id', availTrainerController.updateTrainer);
+router.put('/:id', availTrainerController.updateTrainer);
 router.delete('/delete-trainer/:id', availTrainerController.deleteTrainer);
 router.post('/avail-trainer-payment-intent', availTrainerController.createPaymentIntent);
 router.get('/coach/:id', availTrainerController.getByAssignedCoach);

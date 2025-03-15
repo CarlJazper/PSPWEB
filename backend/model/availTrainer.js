@@ -57,19 +57,32 @@ const availTrainerSchema = new mongoose.Schema({
     startDate: {
         type: Date,
     },
-    endDate: {
-        type: Date
+    trainingType: {
+        type: String
     },
     package: {
         type: String,
         required: true
     },
+    signature: [
+        {
+            public_id: {
+                type: String,
+                required: true
+            },
+            url: {
+                type: String,
+                required: true
+            },
+        }
+    ],
     schedule: [
         {
             index: { type: Number, required: true, },
             dateAssigned: { type: Date, },
             timeAssigned: { type: Date, },
-            status: { type: String, default: 'pending', enum: ['pending', 'waiting', 'completed'] }
+            status: { type: String, default: 'pending', enum: ['pending', 'waiting', 'completed'] },
+            trainings: { type: [String], default: [] }
         }
     ]
 }, {

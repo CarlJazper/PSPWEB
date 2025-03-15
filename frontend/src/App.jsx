@@ -87,7 +87,7 @@ function App() {
 
           {/* Auth */}
           <Route path="/login" element={<Login />} exact="true" />
-          <Route path="/register" element={<Register exact="true" />} />
+          <Route path="/client/register" element={<Register exact="true" />} />
 
           {/* User */}
           <Route path="/me" element={<Profile />} exact="true" />

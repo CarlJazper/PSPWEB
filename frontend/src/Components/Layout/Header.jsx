@@ -64,7 +64,7 @@ const Header = () => {
                 
                 {/* Circular Logo */}
                 <Box sx={{ width: 60, height: 60, borderRadius: '50%', overflow: 'hidden' }}>
-                <Link to={user?.role === 'admin' ? "/dashboard" : "/"}>
+                <Link to={user?.role === 'admin' ? "admin/dashboard" : "/"}>
                         <img 
                             src={`${import.meta.env.BASE_URL}/images/psp-logo.png`} 
                             alt="Logo" 

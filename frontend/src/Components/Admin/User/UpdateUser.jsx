@@ -110,7 +110,8 @@ const UpdateUser = () => {
                                                 label="Role"
                                             >
                                                 <MenuItem value="user">User</MenuItem>
-                                                <MenuItem value="admin">Admin</MenuItem>
+                                                <MenuItem value="client">Client</MenuItem>
+                                                <MenuItem value="coach">Coach</MenuItem>
                                             </Select>
                                         </FormControl>
                                     </Grid>

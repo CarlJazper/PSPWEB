@@ -135,7 +135,7 @@ const Exercise = () => {
           {exercises.map((exercise, index) => (
             <Grid item xs={12} sm={6} md={4} key={exercise._id}>
               <Fade in={true} timeout={500 + index * 100}>
-                <StyledCard>
+                <StyledCard style={{backgroundColor:'#3b444b'}}>
                   {exercise.image?.length > 0 && (
                     <StyledCardMedia
                       component="img"
@@ -147,7 +147,7 @@ const Exercise = () => {
                     <Typography variant="h5" component="h2" sx={{ 
                       fontWeight: 700,
                       mb: 2,
-                      color: 'primary.main'
+                      color: 'white'
                     }}>
                       {exercise.name}
                     </Typography>
@@ -165,12 +165,12 @@ const Exercise = () => {
                       />
                     </Box>
 
-                    <Typography sx={{ mb: 2, color: 'text.secondary' }}>
+                    <Typography sx={{ mb: 2, color: 'white' }}>
                       <strong>Equipment:</strong> {exercise.equipmentUsed}
                     </Typography>
 
                     <Box sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-                      <Typography component="span" sx={{ mr: 1, color: 'text.secondary' }}>
+                      <Typography component="span" sx={{ mr: 1, color: 'white' }}>
                         <strong>Difficulty:</strong>
                       </Typography>
                       <Rating 
@@ -193,7 +193,7 @@ const Exercise = () => {
                       }}
                       onClick={() => toggleInstructions(exercise._id)}
                       >
-                        <Typography variant="subtitle1" fontWeight="bold" color="primary">
+                        <Typography variant="subtitle1" fontWeight="bold" color="white">
                           Instructions
                         </Typography>
                         <IconButton size="small">
@@ -206,7 +206,7 @@ const Exercise = () => {
                           {formatInstructions(exercise.instructions).map((step, index) => (
                             <InstructionStep key={index}>
                               <StepNumber>{index + 1}</StepNumber>
-                              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
+                              <Typography variant="body2" color="white" sx={{ lineHeight: 1.6 }}>
                                 {step}
                               </Typography>
                             </InstructionStep>

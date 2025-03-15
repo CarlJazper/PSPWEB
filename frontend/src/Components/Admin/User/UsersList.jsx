@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import axios from 'axios';
@@ -6,7 +6,8 @@ import { FaEdit, FaTrash, FaDownload } from 'react-icons/fa';
 import { getToken, errMsg, successMsg } from '../../../utils/helpers';
 import baseURL from "../../../utils/baseURL";
 import Loader from '../../Layout/Loader';
-import * as XLSX from 'xlsx'; 
+import * as XLSX from 'xlsx';
+import { Box, Typography } from '@mui/material';
 
 const UsersList = () => {
   const [loading, setLoading] = useState(true);
@@ -17,7 +18,7 @@ const UsersList = () => {
   const [isDeleted, setIsDeleted] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [roleFilter, setRoleFilter] = useState('');
-  const [itemsPerPage, setItemsPerPage] = useState(10); 
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const navigate = useNavigate();
 
   const config = {
@@ -75,9 +76,9 @@ const UsersList = () => {
 
   useEffect(() => {
     setFilteredUsers(
-      allUsers.filter(user => 
+      allUsers.filter(user =>
         (user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
+          user.email.toLowerCase().includes(searchTerm.toLowerCase())) &&
         (roleFilter ? user.role.toLowerCase() === roleFilter.toLowerCase() : true)
       )
     );
@@ -108,46 +109,62 @@ const UsersList = () => {
     <>
       <div className="users-container">
         <h1>All Users</h1>
+        <Box sx={{ textAlign: 'center', mt: 3 }}>
+          <Typography sx={{ color: 'rgba(255,255,255,0.7)' }}>
+            <Link
+              to="/client/register"
+              style={{
+                color: '#4ECDC4',
+                textDecoration: 'none',
+                backgroundColor: 'black',
+                padding: 15,
+                borderRadius: 20,
+              }}
+            >
+              Add Client
+            </Link>
+          </Typography>
+        </Box>
         <div className="filters">
-          <input 
-            type="text" 
-            placeholder="Search users..." 
-            className="search-input" 
-            value={searchTerm} 
-            onChange={(e) => setSearchTerm(e.target.value)} 
+          <input
+            type="text"
+            placeholder="Search users..."
+            className="search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
-          <select 
-            className="role-filter" 
-            value={roleFilter} 
+          <select
+            className="role-filter"
+            value={roleFilter}
             onChange={handleRoleFilterChange}
           >
             <option value="">All Roles</option>
             <option value="admin">Admin</option>
             <option value="user">User</option>
-            <option value="coach">Coach</option>  
-            <option value="client">Client</option>  
+            <option value="coach">Coach</option>
+            <option value="client">Client</option>
           </select>
-          <button 
-              onClick={handleExportCSV} 
-              className={`export-btn ${!selectedUsers.length ? 'disabled' : ''}`} 
-               disabled={!selectedUsers.length}
-            >
-             <FaDownload size={18} /> Export Selected CSV
+          <button
+            onClick={handleExportCSV}
+            className={`export-btn ${!selectedUsers.length ? 'disabled' : ''}`}
+            disabled={!selectedUsers.length}
+          >
+            <FaDownload size={18} /> Export Selected CSV
           </button>
 
         </div>
-        {loading ? <Loader /> : 
-          <DataTable 
-            columns={columns} 
-            data={filteredUsers} 
-            pagination 
-            paginationPerPage={itemsPerPage} 
-            onChangeRowsPerPage={setItemsPerPage} 
-            highlightOnHover 
-            responsive 
-            striped 
-            selectableRows 
-            onSelectedRowsChange={state => setSelectedUsers(state.selectedRows.map(row => row._id))} 
+        {loading ? <Loader /> :
+          <DataTable
+            columns={columns}
+            data={filteredUsers}
+            pagination
+            paginationPerPage={itemsPerPage}
+            onChangeRowsPerPage={setItemsPerPage}
+            highlightOnHover
+            responsive
+            striped
+            selectableRows
+            onSelectedRowsChange={state => setSelectedUsers(state.selectedRows.map(row => row._id))}
             selectableRowsHighlight
           />
         }

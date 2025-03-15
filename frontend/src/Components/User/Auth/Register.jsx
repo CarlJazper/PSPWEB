@@ -26,6 +26,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { InputAdornment, IconButton } from "@mui/material";
+import baseURL from "../../../utils/baseURL";
 
 
 // Validation Schema
@@ -37,8 +38,8 @@ const schema = yup.object().shape({
   address: yup.string().required("Address is required"),
   city: yup.string().required("City is required"),
   phone: yup.string().required("Phone number is required"),
-  emergencyContanctName: yup.string().required("Emergency contact name is required"),
-  emergencyContanctNumber: yup.string().required("Emergency contact number is required"),
+  emergencyContactName: yup.string().required("Emergency contact name is required"),
+  emergencyContactNumber: yup.string().required("Emergency contact number is required"),
   userBranch: yup.string().required("Branch is required"),
 });
 
@@ -64,7 +65,7 @@ const Register = () => {
   useEffect(() => {
     const fetchBranches = async () => {
       try {
-        const { data } = await axios.get("http://localhost:8000/api/v1/branch/get-all-branches");
+        const { data } = await axios.get(`${baseURL}/branch/get-all-branches`);
         setBranches(data.branch);
       } catch (error) {
         toast.error("Failed to load branches");
@@ -81,7 +82,7 @@ const Register = () => {
       formData.set("image", avatar);
 
       const config = { headers: { "Content-Type": "multipart/form-data" } };
-      await axios.post("http://localhost:8000/api/v1/users/register", formData, config);
+      await axios.post(`${baseURL}/users/register`, formData, config);
 
       toast.success("Registered successfully!");
       navigate("/login");
@@ -204,8 +205,8 @@ const Register = () => {
                         { name: "address", label: "Address", type: "text" },
                         { name: "city", label: "City", type: "text" },
                         { name: "phone", label: "Phone", type: "text" },
-                        { name: "emergencyContanctName", label: "Emergency Contact Name", type: "text" },
-                        { name: "emergencyContanctNumber", label: "Emergency Contact Number", type: "text" },
+                        { name: "emergencyContactName", label: "Emergency Contact Name", type: "text" },
+                        { name: "emergencyContactNumber", label: "Emergency Contact Number", type: "text" },
                       ].map((field) => (
                         <Grid item xs={12} sm={6} key={field.name}>
                           <Controller

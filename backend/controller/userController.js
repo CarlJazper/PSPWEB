@@ -3,8 +3,11 @@ const jwt = require('jsonwebtoken');
 const { cloudinary, secretKey } = require('../config/cloudinaryConfig')
 const asyncHandler = require("express-async-handler");
 const User = require("../model/user");
+const Transaction = require("../model/transaction");
 const Log = require('../model/logs');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
+const priceId = process.env.STRIPE_PRICE_ID
+const accesscard = process.env.STRIPE_ACCESSCARD
 
 const userController = {
   //!Register
@@ -12,7 +15,7 @@ const userController = {
     try {
       const { email, password, name, birthDate,
         address, city, role, phone, generalAccess,
-        otherAccess, emergencyContanctName, emergencyContanctNumber } = req.body;
+        otherAccess, emergencyContactName, emergencyContactNumber } = req.body;
 
       const userBranch = req.body.userBranch ? req.body.userBranch : null;
 
@@ -49,20 +52,27 @@ const userController = {
         email: email,
       });
 
+      // Set subscription dates
+      const subscribedDate = new Date();
+      const subscriptionExpiration = new Date();
+      subscriptionExpiration.setFullYear(subscribedDate.getFullYear() + 1);
+
       // Create new user with the Cloudinary URL and Stripe customer ID
       let user = new User({
         name,
         email,
         userBranch,
         birthDate,
-        role,
+        role: 'client',
         address,
         city,
         phone,
-        generalAccess,
-        otherAccess,
-        emergencyContanctName,
-        emergencyContanctNumber,
+        generalAccess: 'PSPCard',
+        otherAccess: 'Any Valid ID',
+        subscribedDate,
+        subscriptionExpiration,
+        emergencyContactName,
+        emergencyContactNumber,
         password: hashedPassword,
         image: { public_id: result.public_id, url: result.secure_url },
         stripeCustomerId: stripeCustomer.id,
@@ -71,12 +81,53 @@ const userController = {
       // Save user to the database
       user = await user.save();
 
-      return res.status(201).json({
-        success: true,
-        message: 'User Registered Successfully',
-        user
+      // Retrieve base price and access card price
+      const basePrice = await stripe.prices.retrieve(priceId);
+      const accessCard = await stripe.prices.retrieve(accesscard);
+      let finalAmount = basePrice.unit_amount + accessCard.unit_amount;
+      finalAmount = finalAmount / 100;
+      let items = [{ price: priceId }];
+      const promo = "";
+
+      if (promo === "") {
+        const finalAmount = basePrice.unit_amount + accessCard.unit_amount;
+        items = [{
+          price_data: {
+            currency: 'php',
+            product: basePrice.product,
+            unit_amount: finalAmount,
+            recurring: {
+              interval: 'year',
+            },
+          }
+        }];
+      } 
+      const subscription = await stripe.subscriptions.create({
+        customer: stripeCustomer.id,
+        items,
+        payment_behavior: 'default_incomplete',
+        expand: ['latest_invoice.payment_intent'],
       });
 
+      const stripeSubscriptionId = subscription.id;
+
+      let transaction = new Transaction({
+        transactionType: 'Membership Subscription',
+        userId: user._id,
+        userBranch, birthDate,
+        address, city, phone, emergencyContactName,
+        emergencyContactNumber, promo: '', agreeTerms: true,
+        subscribedDate, subscriptionExpiration, stripeSubscriptionId,
+        amount: finalAmount,
+      });
+
+      transaction = await transaction.save();
+
+      return res.status(201).json({
+        success: true,
+        message: 'Client Registered Successfully',
+        user
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -90,8 +141,8 @@ const userController = {
   login: asyncHandler(async (req, res) => {
     try {
       const { email, password } = req.body;
+      // console.log(email, password)
       const user = await User.findOne({ email });
-      // console.log(user)
 
       if (!user) {
         return res.status(401).json({ message: 'Invalid Email or Password' });
