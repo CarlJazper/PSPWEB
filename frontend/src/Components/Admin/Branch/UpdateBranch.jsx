@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {Paper,TextField,Button,Typography,Box,CircularProgress,IconButton,useTheme,alpha,Alert,Snackbar,Grid,} from "@mui/material";
+import { Paper, TextField, Button, Typography, Box, CircularProgress, IconButton, useTheme, alpha, Alert, Snackbar, Grid, } from "@mui/material";
 import axios from "axios";
 // Import Icons
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -16,7 +16,7 @@ const UpdateBranch = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
-  
+
   const [branch, setBranch] = useState({
     name: "",
     email: "",
@@ -38,7 +38,12 @@ const UpdateBranch = () => {
   const fetchBranchDetails = async () => {
     setLoading(true);
     try {
+      console.log("Fetching branch with ID:", id);
       const response = await axios.get(`${baseURL}/branch/get-branch/${id}`);
+      if (!response.data.branch) {
+        throw new Error("Branch not found in response");
+      }
+
       setBranch(response.data.branch);
     } catch (error) {
       console.error("Error fetching branch details", error);
@@ -85,10 +90,10 @@ const UpdateBranch = () => {
 
   if (loading) {
     return (
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        alignItems="center" 
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
         height="60vh"
         flexDirection="column"
         gap={2}
@@ -224,9 +229,9 @@ const UpdateBranch = () => {
                   variant="contained"
                   disabled={updating}
                   startIcon={updating ? (
-                    <CircularProgress 
-                      size={20} 
-                      color="inherit" 
+                    <CircularProgress
+                      size={20}
+                      color="inherit"
                       sx={{ mr: 1 }}
                     />
                   ) : (

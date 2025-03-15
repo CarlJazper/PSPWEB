@@ -17,7 +17,7 @@ const Dashboard = () => {
             const config = { headers: { Authorization: `Bearer ${getToken()}` } };
 
             // Fetch users count
-            const { data: usersData } = await axios.get(`https://pspmobile.onrender.com/api/v1/users/get-all-users`, config);
+            const { data: usersData } = await axios.get(`http://localhost:8000/api/v1/users/get-all-users`, config);
             setAllUsers(usersData.users);
 
             // Fetch branches count
@@ -25,8 +25,8 @@ const Dashboard = () => {
             setBranchesCount(branchesData.branch.length);
 
             // Fetch exercises count
-            const { data: exercisesData } = await axios.get(`http://localhost:8000/api/v1/exercises/get-all-exercise`);
-            setExercisesCount(exercisesData.exercises.length);
+            const { data } = await axios.get(`http://localhost:8000/api/v1/exercises/get-all-exercise`);
+            setExercisesCount(data.exercises.length);
 
             // Fetch trainers count
             const { data: trainersData } = await axios.get(`http://localhost:8000/api/v1/availTrainer/get-all-trainers`);

@@ -42,8 +42,14 @@ const ExerciseList = () => {
   const fetchExercises = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${baseURL}/exercises/get-all-exercise`);
+      const response = await axios.get(`http://localhost:8000/api/v1/exercises/get-all-exercise`);
+      console.log("API Response:", response.data); // Check if `exercises` exists
+
+      if (!response.data.exercises) {
+        throw new Error("Exercises not found in response");
+      }
       setExercises(response.data.exercises);
+
     } catch (error) {
       console.error("Error fetching exercises", error);
     } finally {
@@ -88,28 +94,28 @@ const ExerciseList = () => {
   };
 
   return (
-    <Paper 
-      elevation={3} 
-      sx={{ 
-        p: 3, 
+    <Paper
+      elevation={3}
+      sx={{
+        p: 3,
         borderRadius: 3,
         background: theme.palette.background.paper,
         boxShadow: '0 4px 20px 0 rgba(0,0,0,0.05)'
       }}
     >
-      <Box 
-        display="flex" 
-        justifyContent="space-between" 
-        alignItems="center" 
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
         mb={4}
         sx={{
           borderBottom: `1px solid ${theme.palette.divider}`,
           pb: 2
         }}
       >
-        <Typography 
-          variant="h5" 
-          sx={{ 
+        <Typography
+          variant="h5"
+          sx={{
             fontWeight: 600,
             display: 'flex',
             alignItems: 'center',
@@ -154,8 +160,8 @@ const ExerciseList = () => {
             <TableBody>
               {exercises.length > 0 ? (
                 exercises.map((exercise) => (
-                  <TableRow 
-                    key={exercise._id} 
+                  <TableRow
+                    key={exercise._id}
                     hover
                     sx={{
                       '&:hover': {
@@ -169,8 +175,8 @@ const ExerciseList = () => {
                           src={exercise.image.length > 0 ? exercise.image[0].url : ""}
                           alt={exercise.name}
                           variant="rounded"
-                          sx={{ 
-                            width: 56, 
+                          sx={{
+                            width: 56,
                             height: 56,
                             boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                           }}
@@ -185,7 +191,7 @@ const ExerciseList = () => {
                         label={exercise.type}
                         size="small"
                         icon={<SportsGymnasticsIcon />}
-                        sx={{ 
+                        sx={{
                           backgroundColor: alpha(theme.palette.primary.main, 0.1),
                           color: theme.palette.primary.main,
                           fontWeight: 500
@@ -201,7 +207,7 @@ const ExerciseList = () => {
                       <Chip
                         label={exercise.difficulty}
                         size="small"
-                        sx={{ 
+                        sx={{
                           ...getDifficultyColor(exercise.difficulty),
                           fontWeight: 500
                         }}
@@ -210,11 +216,11 @@ const ExerciseList = () => {
                     <TableCell align="center">
                       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
                         <Tooltip title="Edit Exercise">
-                          <IconButton 
-                            component={Link} 
+                          <IconButton
+                            component={Link}
                             to={`/admin/update-exercise/${exercise._id}`}
                             size="small"
-                            sx={{ 
+                            sx={{
                               color: theme.palette.primary.main,
                               '&:hover': { backgroundColor: alpha(theme.palette.primary.main, 0.1) }
                             }}
@@ -223,10 +229,10 @@ const ExerciseList = () => {
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Delete Exercise">
-                          <IconButton 
+                          <IconButton
                             onClick={() => handleDelete(exercise._id)}
                             size="small"
-                            sx={{ 
+                            sx={{
                               color: theme.palette.error.main,
                               '&:hover': { backgroundColor: alpha(theme.palette.error.main, 0.1) }
                             }}
@@ -240,10 +246,10 @@ const ExerciseList = () => {
                 ))
               ) : (
                 <TableRow>
-                  <TableCell 
-                    colSpan={5} 
-                    align="center" 
-                    sx={{ 
+                  <TableCell
+                    colSpan={5}
+                    align="center"
+                    sx={{
                       py: 8,
                       backgroundColor: alpha(theme.palette.primary.main, 0.02)
                     }}

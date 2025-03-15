@@ -12,20 +12,35 @@ const Profile = () => {
     const [user, setUser] = useState('');
 
     const getProfile = async () => {
+        // Retrieve token from session storage
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            console.error("No token found, user not authenticated.");
+            return;
+        }
+
+        // Retrieve user data from session storage
+        const storedUser = sessionStorage.getItem("user");
+        if (!storedUser) {
+            console.error("No user data found in session storage.");
+            return;
+        }
+
+        // Parse stored JSON and get the user ID
+        const user = JSON.parse(storedUser);
+        const userId = user._id; // Extract user ID
+
         const config = {
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         };
+
         try {
-            const { data } = await axios.get(`http://localhost:8080/api/v1/me`, config);
-            setUser(data.user);
+            const { data } = await axios.get(`http://localhost:8000/api/v1/users/get-user/${userId}`, config);
+            setUser(data.user); // Store user data in state
             setLoading(false);
         } catch (error) {
-            console.log(error);
-            toast.error('Invalid user or password', {
-                position: 'bottom-center',
-            });
+            console.error("Error fetching user profile", error);
+            toast.error("Failed to load profile. Please try again.", { position: "bottom-center" });
         }
     };
 

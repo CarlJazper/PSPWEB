@@ -64,7 +64,6 @@ const exerciseController = {
             res.status(500).json({ message: "Create Exercise Error" });
         }
     },
-    
     getExerciseById: async (req, res) => {
         try {
             const { id } = req.params;

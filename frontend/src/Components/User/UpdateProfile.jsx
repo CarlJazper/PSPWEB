@@ -7,7 +7,7 @@ import { getToken } from '../../utils/helpers';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import {Box,Typography,TextField,Button,Avatar,CircularProgress,Grid,Paper,} from '@mui/material';
+import { Box, Typography, TextField, Button, Avatar, CircularProgress, Grid, Paper, } from '@mui/material';
 
 // Validation Schema using Yup
 const schema = yup.object().shape({
@@ -42,21 +42,64 @@ const UpdateProfile = () => {
     });
 
     const getProfile = async () => {
+        // Retrieve token from session storage
+        const token = sessionStorage.getItem("token");
+        if (!token) {
+            console.error("No token found, user not authenticated.");
+            return;
+        }
+    
+        // Retrieve user data from session storage
+        const storedUser = sessionStorage.getItem("user");
+        if (!storedUser) {
+            console.error("No user data found in session storage.");
+            return;
+        }
+    
+        // Parse stored JSON and get the user ID
+        const user = JSON.parse(storedUser);
+        const userId = user._id; // Extract user ID
+    
         const config = {
-            headers: {
-                Authorization: `Bearer ${getToken()}`,
-            },
+            headers: { Authorization: `Bearer ${token}` },
         };
+    
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API}/me`, config);
+            const { data } = await axios.get(`http://localhost:8000/api/v1/users/get-user/${userId}`, config);
+            
             setValue('name', data.user.name);
             setValue('email', data.user.email);
-            setAvatarPreview(data.user.avatar.url);
+    
+            // Check if `avatar` exists before accessing `url`
+            if (data.user.image && data.user.image.length > 0) {
+                setAvatarPreview(data.user.image[0].url);
+            } else {
+                setAvatarPreview('/images/default_avatar.jpg'); // Default avatar
+            }
+    
             setLoading(false);
         } catch (error) {
-            toast.error('User not found', { position: 'bottom-right' });
+            console.error("Error fetching user profile", error);
+            toast.error("Failed to load profile. Please try again.", { position: "bottom-center" });
         }
-    };
+    };    
+
+    // const getProfile = async () => {
+    //     const config = {
+    //         headers: {
+    //             Authorization: `Bearer ${getToken()}`,
+    //         },
+    //     };
+    //     try {
+    //         const { data } = await axios.get(`${import.meta.env.VITE_API}/me`, config);
+    // setValue('name', data.user.name);
+    // setValue('email', data.user.email);
+    // setAvatarPreview(data.user.avatar.url);
+    // setLoading(false);
+    //     } catch (error) {
+    //         toast.error('User not found', { position: 'bottom-right' });
+    //     }
+    // };
 
     const updateProfile = async (userData) => {
         const config = {
@@ -66,7 +109,7 @@ const UpdateProfile = () => {
             },
         };
         try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API}/me/update`, userData, config);
+            const { data } = await axios.put(`http://localhost:8000/api/v1/users/me/update`, userData, config);
             setIsUpdated(data.success);
             setLoading(false);
             toast.success('Profile updated successfully', { position: 'bottom-right' });
@@ -146,7 +189,7 @@ const UpdateProfile = () => {
                                     onBlur={() => trigger('name')}
                                     onChange={(e) => {
                                         setValue('name', e.target.value);
-                                        trigger('name'); 
+                                        trigger('name');
                                     }}
                                 />
                             </Grid>
@@ -162,7 +205,7 @@ const UpdateProfile = () => {
                                     helperText={errors.email?.message}
                                     onBlur={() => trigger('email')}
                                     onChange={(e) => {
-                                        setValue('email', e.target.value); 
+                                        setValue('email', e.target.value);
                                         trigger('email');
                                     }}
                                 />

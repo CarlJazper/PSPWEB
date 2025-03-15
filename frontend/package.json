@@ -21,6 +21,7 @@
     "axios": "^1.7.7",
     "bad-words": "^4.0.0",
     "countries-list": "^3.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^12.4.10",
     "gh-pages": "^6.3.0",
     "mdbreact": "^5.2.0",
