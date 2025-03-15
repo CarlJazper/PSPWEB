@@ -30,7 +30,7 @@ import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 
 const TrainerList = () => {

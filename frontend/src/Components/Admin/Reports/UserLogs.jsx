@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Container, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Avatar } from "@mui/material";
+import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress, Avatar } from "@mui/material";
 import axios from "axios";
+import baseURL from "../../../utils/baseURL";
 
 const Logs = () => {
     const [logs, setLogs] = useState([]);
@@ -8,7 +9,7 @@ const Logs = () => {
 
     useEffect(() => {
         console.log("Fetching logs...");
-        axios.get("http://localhost:8000/api/v1/logs/get-all-logs")
+        axios.get(`${baseURL}/logs/get-all-logs`)
             .then(response => {
                 console.log("Logs response:", response.data);
                 setLogs(response.data.logs);
@@ -20,15 +21,59 @@ const Logs = () => {
             });
     }, []);
 
+    // Function to filter today's logs
+    const getTodayLogs = () => {
+        const today = new Date().toISOString().split("T")[0]; // Get current date in YYYY-MM-DD
+        return logs.filter(log => log.date.startsWith(today));
+    };
+
+    const todayLogs = getTodayLogs();
+
     return (
         <Container maxWidth="md" sx={{ py: 4, textAlign: "center" }}>
-            <Typography variant="h3" fontWeight="bold" color="primary" gutterBottom>
-                PSP <span style={{ color: "#FFAC1C" }}>Logs</span>
+            {/* Today's Logs */}
+            <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
+                Today's Logs
+            </Typography>
+            {loading ? (
+                <CircularProgress />
+            ) : todayLogs.length === 0 ? (
+                <Typography variant="h6" color="gray">No users logged in today</Typography>
+            ) : (
+                <TableContainer component={Paper} sx={{ backgroundColor: "#212121", color: "white", mb: 4 }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell></TableCell>
+                                <TableCell sx={{ color: "#FFAC1C", fontWeight: "bold" }}>User</TableCell>
+                                <TableCell sx={{ color: "#FFAC1C", fontWeight: "bold" }}>Time In</TableCell>
+                                <TableCell sx={{ color: "#FFAC1C", fontWeight: "bold" }}>Time Out</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {todayLogs.map((log) => (
+                                <TableRow key={log._id}>
+                                    <TableCell>
+                                        <Avatar src={log.userId?.image?.[0]?.url || "https://via.placeholder.com/50"} />
+                                    </TableCell>
+                                    <TableCell sx={{ color: "white" }}>{log.userId?.name || "Unknown User"}</TableCell>
+                                    <TableCell sx={{ color: "white" }}>{new Date(log.timeIn).toLocaleTimeString()}</TableCell>
+                                    <TableCell sx={{ color: "white" }}>{log.timeOut ? new Date(log.timeOut).toLocaleTimeString() : "Active"}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            )}
+
+            {/* All Logs */}
+            <Typography variant="h4" fontWeight="bold" color="primary" gutterBottom>
+                All Logs
             </Typography>
             {loading ? (
                 <CircularProgress />
             ) : logs.length === 0 ? (
-                <Typography variant="h5" color="gray">0 users in the gym</Typography>
+                <Typography variant="h6" color="gray">No logs available</Typography>
             ) : (
                 <TableContainer component={Paper} sx={{ backgroundColor: "#212121", color: "white" }}>
                     <Table>
@@ -42,20 +87,17 @@ const Logs = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {logs.map((log) => {
-                                console.log("Log user image:", log.userId?.image);
-                                return (
-                                    <TableRow key={log._id}>
-                                        <TableCell>
-                                        <Avatar src={log.userId?.image && Array.isArray(log.userId.image) && log.userId.image.length > 0 ? log.userId.image[0].url : "https://via.placeholder.com/50"} />
-                                        </TableCell>
-                                        <TableCell sx={{ color: "white" }}>{log.userId?.name || "Unknown User"}</TableCell>
-                                        <TableCell sx={{ color: "white" }}>{new Date(log.date).toLocaleDateString()}</TableCell>
-                                        <TableCell sx={{ color: "white" }}>{new Date(log.timeIn).toLocaleTimeString()}</TableCell>
-                                        <TableCell sx={{ color: "white" }}>{log.timeOut ? new Date(log.timeOut).toLocaleTimeString() : "Active"}</TableCell>
-                                    </TableRow>
-                                );
-                            })}
+                            {logs.map((log) => (
+                                <TableRow key={log._id}>
+                                    <TableCell>
+                                        <Avatar src={log.userId?.image?.[0]?.url || "https://via.placeholder.com/50"} />
+                                    </TableCell>
+                                    <TableCell sx={{ color: "white" }}>{log.userId?.name || "Unknown User"}</TableCell>
+                                    <TableCell sx={{ color: "white" }}>{new Date(log.date).toLocaleDateString()}</TableCell>
+                                    <TableCell sx={{ color: "white" }}>{new Date(log.timeIn).toLocaleTimeString()}</TableCell>
+                                    <TableCell sx={{ color: "white" }}>{log.timeOut ? new Date(log.timeOut).toLocaleTimeString() : "Active"}</TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>

@@ -10,7 +10,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveIcon from "@mui/icons-material/Save";
 
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 const CreateBranch = ({ onBranchCreated }) => {
   const [formData, setFormData] = useState({

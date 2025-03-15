@@ -14,7 +14,7 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import WorkIcon from "@mui/icons-material/Work";
 
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 
 const UpdateTrainer = () => {

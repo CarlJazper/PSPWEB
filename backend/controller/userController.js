@@ -284,9 +284,9 @@ const userController = {
   getTimeInLogs: async (req, res) => {
     try {
       const today = new Date().setHours(0, 0, 0, 0);
-      let activeLogs = await Log.findOne({ date: today, timeOut: null });
+      let activeLogs = await Log.find({ date: today, timeOut: null });
 
-      // console.log(activeLogs)
+      console.log(activeLogs)
       res.status(201).json({ message: "Logs fetch successfully", activeLogs });
     } catch (error) {
       console.error("Fetch All Logs Error:", error.message);

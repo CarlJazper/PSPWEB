@@ -10,7 +10,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import SaveIcon from "@mui/icons-material/Save";
 
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 const UpdateBranch = () => {
   const { id } = useParams();

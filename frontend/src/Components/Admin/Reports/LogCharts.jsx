@@ -3,6 +3,7 @@ import { Container, Typography, CircularProgress, Box } from '@mui/material';
 import axios from 'axios';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, BarChart, Bar, PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { format, parseISO, differenceInMinutes } from 'date-fns';
+import baseURL from "../../../utils/baseURL";
 
 const COLORS = ["#FFAC1C", "#8884d8", "#82ca9d", "#a678de", "#FF8042", "#f44336", "#9c27b0", "#673ab7", "#3f51b5"];
 
@@ -19,8 +20,8 @@ const LogCharts = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const logsResponse = await axios.get("http://localhost:8000/api/v1/logs/get-all-logs");
-                const usersResponse = await axios.get("http://localhost:8000/api/v1/users/get-all-users");
+                const logsResponse = await axios.get(`${baseURL}/logs/get-all-logs`);
+                const usersResponse = await axios.get(`${baseURL}/users/get-all-users`);
 
                 setLogs(logsResponse.data.logs);
                 setUsers(usersResponse.data.users);
@@ -43,24 +44,22 @@ const LogCharts = () => {
                 return acc;
             }, {});
 
-            const dailyActivityData = Object.entries(dailyActivity).map(([date, count]) => ({
+            setDailyActivityData(Object.entries(dailyActivity).map(([date, count]) => ({
                 date: format(parseISO(date), 'MMM dd, yyyy'),
                 count,
-            }));
-            setDailyActivityData(dailyActivityData);
+            })));
 
-            // 2. Peak Gym Hours
+            // 2. Peak Gym Hours (Converted to 12-hour format)
             const peakHours = logs.reduce((acc, log) => {
                 const hour = parseISO(log.timeIn).getHours();
                 acc[hour] = (acc[hour] || 0) + 1;
                 return acc;
             }, {});
 
-            const peakHoursData = Object.entries(peakHours).map(([hour, count]) => ({
-                hour: `${hour}:00`,
+            setPeakHoursData(Object.entries(peakHours).map(([hour, count]) => ({
+                hour: format(parseISO(`2022-01-01T${hour.padStart(2, '0')}:00:00`), "h a"), // Converts to 12-hour format
                 count,
-            }));
-            setPeakHoursData(peakHoursData);
+            })));
 
             // 3. User Check-in Frequency
             const userFrequency = logs.reduce((acc, log) => {
@@ -69,25 +68,22 @@ const LogCharts = () => {
                 return acc;
             }, {});
 
-            const userFrequencyData = Object.entries(userFrequency).map(([userId, count]) => {
+            setUserFrequencyData(Object.entries(userFrequency).map(([userId, count]) => {
                 const user = users.find((u) => u._id === userId);
-                return {
-                    name: user ? user.name : `User ${userId}`,
-                    count,
-                };
-            });
-            setUserFrequencyData(userFrequencyData);
+                return { name: user ? user.name : `User ${userId}`, count };
+            }));
 
             // 4. Average Session Duration
-            const sessionDurations = logs.map(log => {
-                const timeIn = parseISO(log.timeIn);
-                const timeOut = parseISO(log.timeOut);
-                return differenceInMinutes(timeOut, timeIn);
-            });
-
-            const averageDuration = sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length;
-
-            setAverageSessionData([{ name: 'Average Session', duration: averageDuration }]);
+            const sessionDurations = logs
+            .filter(log => log.timeOut)
+            .map(log => differenceInMinutes(parseISO(log.timeOut), parseISO(log.timeIn)));
+        
+            const averageDuration = sessionDurations.length > 0
+            ? sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length
+            : 0;
+        
+            setAverageSessionData([{ name: 'Average Session', duration: Math.round(averageDuration) }]);
+        
 
             // 5. Active vs. Inactive Users
             const activeUsers = logs.filter(log => !log.timeOut).length;
@@ -100,7 +96,6 @@ const LogCharts = () => {
     }, [logs, users]);
 
     if (loading) return <CircularProgress />;
-
     if (logs.length === 0) return <Typography variant="h5" color="gray">No logs available</Typography>;
 
     return (
@@ -112,67 +107,79 @@ const LogCharts = () => {
             <Box sx={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
                 {/* Line Chart - Daily Activity */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Daily User Activity</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Daily User Activity</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={dailyActivityData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="date" />
                             <YAxis />
                             <Tooltip />
-                            <Line type="monotone" dataKey="count" stroke="#FFAC1C" strokeWidth={2} />
+                            <Line type="monotone" dataKey="count" stroke={COLORS[0]} strokeWidth={2} />
                         </LineChart>
                     </ResponsiveContainer>
                 </Box>
 
                 {/* Bar Chart - Peak Gym Hours */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Peak Gym Hours</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Peak Gym Hours</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={peakHoursData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="hour" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="count" fill="#FFAC1C" />
+                            <Legend />
+                            <Bar dataKey="count">
+                                {peakHoursData.map((_, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Bar>
                         </BarChart>
                     </ResponsiveContainer>
                 </Box>
 
                 {/* Bar Chart - User Check-in Frequency */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>User Check-in Frequency</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>User Check-in Frequency</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={userFrequencyData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Bar dataKey="count" fill="#8884d8" />
+                            <Legend />
+                            <Bar dataKey="count">
+                                {userFrequencyData.map((_, index) => (
+                                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                            </Bar>
                         </BarChart>
                     </ResponsiveContainer>
                 </Box>
 
-                {/* Line Chart - Average Session Duration */}
+                {/* Bar Chart - Average Session Duration */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Average Session Duration (minutes)</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Average Session Duration</Typography>
                     <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={[{ name: '', duration: averageSessionData[0]?.duration || 0 }]}>
+                        <BarChart data={averageSessionData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="name" />
                             <YAxis />
                             <Tooltip />
-                            <Line type="monotone" dataKey="duration" stroke="#82ca9d" />
-                        </LineChart>
+                            <Legend />
+                            <Bar dataKey="duration" fill={COLORS[0]} />
+                        </BarChart>
                     </ResponsiveContainer>
                 </Box>
 
+
                 {/* Pie Chart - Active vs. Inactive Users */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="white" mb={1}>Active vs. Inactive Users</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Active Users Inside Gym</Typography>
                     <ResponsiveContainer width="100%" height={400}>
                         <PieChart>
                             <Pie data={activeInactiveData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
-                                {activeInactiveData.map((entry, index) => (
+                                {activeInactiveData.map((_, index) => (
                                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
@@ -187,4 +194,3 @@ const LogCharts = () => {
 };
 
 export default LogCharts;
-

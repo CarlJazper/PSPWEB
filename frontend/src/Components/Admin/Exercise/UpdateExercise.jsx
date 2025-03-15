@@ -14,7 +14,7 @@ import BuildIcon from "@mui/icons-material/Build";
 import SpeedIcon from "@mui/icons-material/Speed";
 import DescriptionIcon from "@mui/icons-material/Description";
 
-import baseURL from "../../../utils/baseUrl";
+import baseURL from "../../../utils/baseURL";
 
 
 const UpdateExercise = () => {
