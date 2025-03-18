@@ -363,5 +363,68 @@ const userController = {
       res.status(500).json({ message: "Create Users Error" });
     }
   },
+  updateTrainer: asyncHandler(async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { name, email, role } = req.body;
+  
+      let user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+  
+      // If an image is uploaded, update the image
+      if (req.file) {
+        const result = await cloudinary.uploader.upload(req.file.path, {
+          folder: 'PSPCloudinaryData/users',
+          width: 150,
+          crop: "scale"
+        });
+        user.image = { public_id: result.public_id, url: result.secure_url };
+      }
+  
+      user.name = name || user.name;
+      user.email = email || user.email;
+      user.role = role || user.role;
+  
+      await user.save();
+  
+      return res.status(200).json({ success: true, message: "Trainer updated successfully", user });
+    } catch (error) {
+      console.error(error.message);
+      return res.status(500).json({ success: false, message: "Update Trainer Server Error" });
+    }
+  }),
+  deleteUser: asyncHandler(async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      // Find the user
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+  
+      // Delete user's image from Cloudinary if it exists
+      if (user.image && user.image.public_id) {
+        await cloudinary.uploader.destroy(user.image.public_id);
+      }
+  
+      // Delete user's Stripe customer if they have one
+      if (user.stripeCustomerId) {
+        await stripe.customers.del(user.stripeCustomerId);
+      }
+  
+      // Delete user from database
+      await User.findByIdAndDelete(id);
+  
+      return res.status(200).json({ success: true, message: "User deleted successfully" });
+    } catch (error) {
+      console.error("Delete User Error:", error);
+      return res.status(500).json({ success: false, message: "Error deleting user" });
+    }
+  }),
+  
+  
 };
 module.exports = userController;

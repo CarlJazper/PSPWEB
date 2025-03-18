@@ -1,38 +1,32 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import {Container,TextField,Button,Typography,MenuItem,Box,Paper,Grid,IconButton,useTheme,alpha,CircularProgress,Alert,Snackbar,Chip,Divider,} from "@mui/material";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// Import Icons
-import PersonIcon from "@mui/icons-material/Person";
+import axios from "axios";
+import {
+  TextField,
+  Button,
+  Typography,
+  Paper,
+  Box,
+  Grid,
+  IconButton,
+  Avatar,
+  Snackbar,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SaveIcon from "@mui/icons-material/Save";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import EmailIcon from "@mui/icons-material/Email";
-import PhoneIcon from "@mui/icons-material/Phone";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
-import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import WorkIcon from "@mui/icons-material/Work";
-
-import baseURL from "../../../utils/baseURL";
-
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const UpdateTrainer = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const theme = useTheme();
 
-  const [formData, setFormData] = useState({
+  const [trainer, setTrainer] = useState({
     name: "",
-    birthdate: "",
-    address: "",
-    phone: "",
     email: "",
-    sessions: 0,
-    sessionRate: "",
-    total: "",
-    package: "",
-    status: "active",
+    image: null,
+    previewImage: "",
   });
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
@@ -43,44 +37,62 @@ const UpdateTrainer = () => {
   });
 
   useEffect(() => {
-    fetchTrainerDetails();
+    const fetchTrainer = async () => {
+      try {
+        const { data } = await axios.get(
+          `http://localhost:8000/api/v1/users/get-user/${id}`
+        );
+        setTrainer({
+          name: data.user.name,
+          email: data.user.email,
+          previewImage: data.user.image?.url || "",
+        });
+      } catch (error) {
+        console.error("Error fetching trainer:", error);
+        setSnackbar({
+          open: true,
+          message: "Error fetching trainer details",
+          severity: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrainer();
   }, [id]);
 
-  const fetchTrainerDetails = async () => {
-    try {
-      const response = await axios.get(`${baseURL}/availTrainer/get-trainer/${id}`);
-      const trainerData = response.data;
-      const formattedDate = trainerData.birthdate
-        ? new Date(trainerData.birthdate).toISOString().split("T")[0]
-        : "";
-
-      setFormData({
-        ...trainerData,
-        birthdate: formattedDate,
-      });
-    } catch (error) {
-      console.error("Error fetching trainer:", error);
-      setSnackbar({
-        open: true,
-        message: "Error fetching trainer details",
-        severity: "error",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleChange = (e) => {
+    setTrainer({ ...trainer, [e.target.name]: e.target.value });
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setTrainer({
+        ...trainer,
+        image: file,
+        previewImage: URL.createObjectURL(file),
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdating(true);
+
+    const formData = new FormData();
+    formData.append("name", trainer.name);
+    formData.append("email", trainer.email);
+    if (trainer.image) {
+      formData.append("image", trainer.image);
+    }
+
     try {
       await axios.put(
-        `${baseURL}/availTrainer/update-trainer/${id}`,
-        formData
+        `http://localhost:8000/api/v1/users/update-trainer/${id}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       setSnackbar({
         open: true,
@@ -106,16 +118,9 @@ const UpdateTrainer = () => {
 
   if (loading) {
     return (
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        alignItems="center" 
-        height="60vh"
-        flexDirection="column"
-        gap={2}
-      >
-        <CircularProgress size={40} />
-        <Typography variant="body1" color="text.secondary">
+      <Box display="flex" justifyContent="center" alignItems="center" height="60vh">
+        <CircularProgress />
+        <Typography variant="body1" sx={{ ml: 2 }}>
           Loading trainer details...
         </Typography>
       </Box>
@@ -123,188 +128,74 @@ const UpdateTrainer = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: 900, margin: "0 auto", p: 2 }}>
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          borderRadius: 3,
-          background: theme.palette.background.paper,
-          boxShadow: "0 4px 20px 0 rgba(0,0,0,0.05)",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            mb: 4,
-            gap: 1,
-            borderBottom: `1px solid ${theme.palette.divider}`,
-            pb: 2,
-          }}
-        >
-          <IconButton
-            onClick={() => navigate("/admin/trainers")}
-            sx={{
-              mr: 1,
-              color: theme.palette.text.secondary,
-              "&:hover": { backgroundColor: alpha(theme.palette.primary.main, 0.1) },
-            }}
-          >
+    <Box sx={{ maxWidth: 600, margin: "0 auto", p: 2 }}>
+      <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+        <Box sx={{ display: "flex", alignItems: "center", mb: 4 }}>
+          <IconButton onClick={() => navigate("/admin/trainers")}>
             <ArrowBackIcon />
           </IconButton>
-          <PersonIcon sx={{ fontSize: 28, color: theme.palette.primary.main }} />
-          <Typography variant="h5" sx={{ fontWeight: 600 }}>
+          <Typography variant="h5" sx={{ fontWeight: 600, ml: 1 }}>
             Update Trainer
           </Typography>
         </Box>
 
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
+            <Grid item xs={12} display="flex" justifyContent="center">
+              <Avatar src={trainer.previewImage} sx={{ width: 120, height: 120 }} />
+            </Grid>
+
             <Grid item xs={12}>
-              <Divider>
-                <Chip label="Personal Information" color="primary" />
-              </Divider>
+              <TextField
+                fullWidth
+                label="Name"
+                name="name"
+                value={trainer.name}
+                onChange={handleChange}
+                required
+                variant="outlined"
+              />
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <PersonIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  fullWidth
-                  label="Full Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </Box>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                value={trainer.email}
+                onChange={handleChange}
+                required
+                type="email"
+                variant="outlined"
+              />
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <CalendarTodayIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  fullWidth
-                  label="Birthdate"
-                  name="birthdate"
-                  type="date"
-                  value={formData.birthdate}
-                  onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
-                  required
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <EmailIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  fullWidth
-                  label="Email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  type="email"
-                  required
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <PhoneIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  fullWidth
-                  label="Phone Number"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  border: "2px dashed gray",
+                  borderRadius: 2,
+                  p: 3,
+                  textAlign: "center",
+                }}
+              >
+                <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />}>
+                  Upload New Image
+                  <input type="file" hidden accept="image/*" onChange={handleImageChange} />
+                </Button>
+                <Typography variant="body2" color="text.secondary">
+                  Upload a new profile image
+                </Typography>
               </Box>
             </Grid>
 
             <Grid item xs={12}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <LocationOnIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  fullWidth
-                  label="Address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  required
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Divider>
-                <Chip label="Session Details" color="primary" />
-              </Divider>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <FitnessCenterIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  fullWidth
-                  label="Sessions"
-                  name="sessions"
-                  type="number"
-                  value={formData.sessions}
-                  onChange={handleChange}
-                  required
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <AttachMoneyIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  fullWidth
-                  label="Session Rate"
-                  name="sessionRate"
-                  type="number"
-                  value={formData.sessionRate}
-                  onChange={handleChange}
-                  required
-                />
-              </Box>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                <WorkIcon sx={{ color: "text.secondary", mt: 2 }} />
-                <TextField
-                  select
-                  fullWidth
-                  label="Status"
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  required
-                >
-                  <MenuItem value="active">Active</MenuItem>
-                  <MenuItem value="inactive">Inactive</MenuItem>
-                </TextField>
-              </Box>
-            </Grid>
-
-            <Grid item xs={12}>
-              <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+              <Box sx={{ display: "flex", gap: 2 }}>
                 <Button
                   variant="outlined"
                   onClick={() => navigate("/admin/trainers")}
                   fullWidth
-                  sx={{
-                    py: 1.5,
-                    textTransform: "none",
-                    borderRadius: 2,
-                  }}
+                  sx={{ py: 1.5 }}
                 >
                   Cancel
                 </Button>
@@ -312,23 +203,11 @@ const UpdateTrainer = () => {
                   type="submit"
                   variant="contained"
                   disabled={updating}
-                  startIcon={updating ? (
-                    <CircularProgress size={20} color="inherit" />
-                  ) : (
-                    <SaveIcon />
-                  )}
+                  startIcon={updating ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
                   fullWidth
-                  sx={{
-                    py: 1.5,
-                    textTransform: "none",
-                    borderRadius: 2,
-                    backgroundColor: theme.palette.primary.main,
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.dark,
-                    },
-                  }}
+                  sx={{ py: 1.5 }}
                 >
-                  {updating ? "Updating Trainer..." : "Update Trainer"}
+                  {updating ? "Updating..." : "Update Trainer"}
                 </Button>
               </Box>
             </Grid>
@@ -342,12 +221,7 @@ const UpdateTrainer = () => {
         onClose={handleCloseSnackbar}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity={snackbar.severity}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} variant="filled">
           {snackbar.message}
         </Alert>
       </Snackbar>

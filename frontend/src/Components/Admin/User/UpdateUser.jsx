@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Box, TextField, Button, CircularProgress, Grid, Typography, MenuItem, FormControl, InputLabel, Select, Container } from '@mui/material';
 import { errMsg, successMsg, getToken } from '../../../utils/helpers';
 import axios from 'axios';
+import baseURL from "../../../utils/baseURL";
 
 const UpdateUser = () => {
     const [name, setName] = useState('');
@@ -24,7 +25,7 @@ const UpdateUser = () => {
 
     const getUserDetails = async (id) => {
         try {
-            const { data } = await axios.get(`https://pspmobile.onrender.com/api/v1/users/get-user/${id}`, config);
+            const { data } = await axios.get(`${baseURL}/users/get-user/${id}`, config);
             setUser(data.user);
             setLoading(false);
         } catch (error) {
@@ -34,7 +35,7 @@ const UpdateUser = () => {
 
     const updateUser = async (id, userData) => {
         try {
-            const { data } = await axios.put(`https://pspmobile.onrender.com/api/v1/users/update/${id}`, userData, config);
+            const { data } = await axios.put(`${baseURL}/users/update/${id}`, userData, config);
             setIsUpdated(data.success);
             setLoading(false);
         } catch (error) {

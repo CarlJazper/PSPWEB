@@ -15,4 +15,8 @@ router.get('/get-all-users', userController.getAllUsers);
 router.post('/user-log/:id', userController.userLog);
 router.get('/get-timedin-logs', userController.getTimeInLogs);
 
+router.put('/update-trainer/:id', upload.single('image'), userController.updateTrainer);
+router.delete('/user-delete/:id', userController.deleteUser);
+
+
 module.exports = router;

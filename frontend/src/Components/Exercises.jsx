@@ -114,11 +114,11 @@ const Exercise = () => {
           component="h1" 
           sx={{ 
             fontWeight: 700,
-            color: 'primary.main',
+            color: '#BDBB02',
             mb: 2,
           }}
         >
-          <FitnessCenterIcon sx={{ mr: 2, fontSize: 40 }} />
+          <FitnessCenterIcon sx={{ mr: 2, fontSize: 40, color:'#fff'}} />
           Exercise Library
         </Typography>
         <Typography variant="h6" color="#fff" sx={{ maxWidth: 800, mx: 'auto' }}>

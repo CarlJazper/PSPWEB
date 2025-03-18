@@ -41,7 +41,7 @@ const UsersList = () => {
 
   const deleteUser = async (id) => {
     try {
-      const { data } = await axios.delete(`${import.meta.env.VITE_API}/admin/user/${id}`, config);
+      const { data } = await axios.delete(`${baseURL}/users/user-delete/${id}`, config);
       setIsDeleted(data.success);
       setLoading(false);
     } catch (error) {
