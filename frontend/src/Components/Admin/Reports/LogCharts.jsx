@@ -75,15 +75,15 @@ const LogCharts = () => {
 
             // 4. Average Session Duration
             const sessionDurations = logs
-            .filter(log => log.timeOut)
-            .map(log => differenceInMinutes(parseISO(log.timeOut), parseISO(log.timeIn)));
-        
+                .filter(log => log.timeOut)
+                .map(log => differenceInMinutes(parseISO(log.timeOut), parseISO(log.timeIn)));
+
             const averageDuration = sessionDurations.length > 0
-            ? sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length
-            : 0;
-        
+                ? sessionDurations.reduce((sum, duration) => sum + duration, 0) / sessionDurations.length
+                : 0;
+
             setAverageSessionData([{ name: 'Average Session', duration: Math.round(averageDuration) }]);
-        
+
 
             // 5. Active vs. Inactive Users
             const activeUsers = logs.filter(log => !log.timeOut).length;
@@ -159,7 +159,7 @@ const LogCharts = () => {
 
                 {/* Bar Chart - Average Session Duration */}
                 <Box sx={{ width: '45%', my: 2 }}>
-                    <Typography variant="h6" color="#000" mb={1}>Average Session Duration</Typography>
+                    <Typography variant="h6" color="#000" mb={1}>Average Minute Per Session</Typography>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={averageSessionData}>
                             <CartesianGrid strokeDasharray="3 3" />

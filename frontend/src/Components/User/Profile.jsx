@@ -64,7 +64,7 @@ const Profile = () => {
                         {/* Avatar and Edit Profile Button */}
                         <Grid item xs={12} md={4} sx={{ textAlign: 'center' }}>
                             <Avatar
-                                src={user?.image[0]?.url || ''}
+                                src={user.image ? user.image[0].url : ''}
                                 alt={user.name}
                                 sx={{
                                     width: 150,
