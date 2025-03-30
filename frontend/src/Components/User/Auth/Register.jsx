@@ -85,7 +85,7 @@ const Register = () => {
       await axios.post(`${baseURL}/users/register`, formData, config);
 
       toast.success("Registered successfully!");
-      navigate("/login");
+      navigate("/admin/users");
     } catch (err) {
       setError("server", { type: "manual", message: err.response.data.message });
     } finally {

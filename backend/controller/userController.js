@@ -14,8 +14,8 @@ const userController = {
   register: asyncHandler(async (req, res) => {
     try {
       const { email, password, name, birthDate,
-        address, city, role, phone, generalAccess,
-        otherAccess, emergencyContactName, emergencyContactNumber } = req.body;
+        address, city, role, phone, emergencyContactName,
+        emergencyContactNumber } = req.body;
 
       const userBranch = req.body.userBranch ? req.body.userBranch : null;
 
@@ -52,82 +52,114 @@ const userController = {
         email: email,
       });
 
-      // Set subscription dates
-      const subscribedDate = new Date();
-      const subscriptionExpiration = new Date();
-      subscriptionExpiration.setFullYear(subscribedDate.getFullYear() + 1);
+      // If the role is "coach", save the user without additional processing
+      if (role === "coach") {
+        // console.log('Here Coach!!')
+        let user = new User({
+          name,
+          email,
+          userBranch,
+          birthDate,
+          role,
+          address,
+          city,
+          phone,
+          generalAccess: 'PSPCard',
+          otherAccess: 'Any Valid ID',
+          emergencyContactName,
+          emergencyContactNumber,
+          password: hashedPassword,
+          image: { public_id: result.public_id, url: result.secure_url },
+        });
 
-      // Create new user with the Cloudinary URL and Stripe customer ID
-      let user = new User({
-        name,
-        email,
-        userBranch,
-        birthDate,
-        role: 'client',
-        address,
-        city,
-        phone,
-        generalAccess: 'PSPCard',
-        otherAccess: 'Any Valid ID',
-        subscribedDate,
-        subscriptionExpiration,
-        emergencyContactName,
-        emergencyContactNumber,
-        password: hashedPassword,
-        image: { public_id: result.public_id, url: result.secure_url },
-        stripeCustomerId: stripeCustomer.id,
-      });
+        // Save user to the database
+        user = await user.save();
 
-      // Save user to the database
-      user = await user.save();
+        return res.status(201).json({
+          success: true,
+          message: 'Coach Registered Successfully',
+          user
+        });
+      } else {
 
-      // Retrieve base price and access card price
-      const basePrice = await stripe.prices.retrieve(priceId);
-      const accessCard = await stripe.prices.retrieve(accesscard);
-      let finalAmount = basePrice.unit_amount + accessCard.unit_amount;
-      finalAmount = finalAmount / 100;
-      let items = [{ price: priceId }];
-      const promo = "";
+        // Set subscription dates
+        const subscribedDate = new Date();
+        const subscriptionExpiration = new Date();
+        subscriptionExpiration.setFullYear(subscribedDate.getFullYear() + 1);
 
-      if (promo === "") {
-        const finalAmount = basePrice.unit_amount + accessCard.unit_amount;
-        items = [{
-          price_data: {
-            currency: 'php',
-            product: basePrice.product,
-            unit_amount: finalAmount,
-            recurring: {
-              interval: 'year',
-            },
-          }
-        }];
-      } 
-      const subscription = await stripe.subscriptions.create({
-        customer: stripeCustomer.id,
-        items,
-        payment_behavior: 'default_incomplete',
-        expand: ['latest_invoice.payment_intent'],
-      });
+        // Create new user with the Cloudinary URL and Stripe customer ID
+        let user = new User({
+          name,
+          email,
+          userBranch,
+          birthDate,
+          role: 'client',
+          address,
+          city,
+          phone,
+          generalAccess: 'PSPCard',
+          otherAccess: 'Any Valid ID',
+          subscribedDate,
+          subscriptionExpiration,
+          emergencyContactName,
+          emergencyContactNumber,
+          password: hashedPassword,
+          image: { public_id: result.public_id, url: result.secure_url },
+          stripeCustomerId: stripeCustomer.id,
+        });
 
-      const stripeSubscriptionId = subscription.id;
+        // Save user to the database
+        user = await user.save();
 
-      let transaction = new Transaction({
-        transactionType: 'Membership Subscription',
-        userId: user._id,
-        userBranch, birthDate,
-        address, city, phone, emergencyContactName,
-        emergencyContactNumber, promo: '', agreeTerms: true,
-        subscribedDate, subscriptionExpiration, stripeSubscriptionId,
-        amount: finalAmount,
-      });
+        // Retrieve base price and access card price
+        const basePrice = await stripe.prices.retrieve(priceId);
+        const accessCard = await stripe.prices.retrieve(accesscard);
+        let finalAmount = basePrice.unit_amount + accessCard.unit_amount;
+        finalAmount = finalAmount / 100;
+        let items = [{ price: priceId }];
+        const promo = "";
 
-      transaction = await transaction.save();
+        if (promo === "") {
+          const finalAmount = basePrice.unit_amount + accessCard.unit_amount;
+          items = [{
+            price_data: {
+              currency: 'php',
+              product: basePrice.product,
+              unit_amount: finalAmount,
+              recurring: {
+                interval: 'year',
+              },
+            }
+          }];
+        }
+        const subscription = await stripe.subscriptions.create({
+          customer: stripeCustomer.id,
+          items,
+          payment_behavior: 'default_incomplete',
+          expand: ['latest_invoice.payment_intent'],
+        });
 
-      return res.status(201).json({
-        success: true,
-        message: 'Client Registered Successfully',
-        user
-      });
+        const stripeSubscriptionId = subscription.id;
+
+        let transaction = new Transaction({
+          transactionType: 'Membership Subscription',
+          userId: user._id,
+          userBranch, birthDate,
+          address, city, phone, emergencyContactName,
+          emergencyContactNumber, promo: '', agreeTerms: true,
+          subscribedDate, subscriptionExpiration, stripeSubscriptionId,
+          amount: finalAmount,
+        });
+
+        transaction = await transaction.save();
+
+        return res.status(201).json({
+          success: true,
+          message: 'Client Registered Successfully',
+          user
+        });
+        // console.log("Here goes too!")
+      }
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -367,12 +399,12 @@ const userController = {
     try {
       const { id } = req.params;
       const { name, email, role } = req.body;
-  
+
       let user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ success: false, message: "User not found" });
       }
-  
+
       // If an image is uploaded, update the image
       if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path, {
@@ -382,13 +414,13 @@ const userController = {
         });
         user.image = { public_id: result.public_id, url: result.secure_url };
       }
-  
+
       user.name = name || user.name;
       user.email = email || user.email;
       user.role = role || user.role;
-  
+
       await user.save();
-  
+
       return res.status(200).json({ success: true, message: "Trainer updated successfully", user });
     } catch (error) {
       console.error(error.message);
@@ -398,33 +430,33 @@ const userController = {
   deleteUser: asyncHandler(async (req, res) => {
     try {
       const { id } = req.params;
-  
+
       // Find the user
       const user = await User.findById(id);
       if (!user) {
         return res.status(404).json({ success: false, message: "User not found" });
       }
-  
+
       // Delete user's image from Cloudinary if it exists
       if (user.image && user.image.public_id) {
         await cloudinary.uploader.destroy(user.image.public_id);
       }
-  
+
       // Delete user's Stripe customer if they have one
       if (user.stripeCustomerId) {
         await stripe.customers.del(user.stripeCustomerId);
       }
-  
+
       // Delete user from database
       await User.findByIdAndDelete(id);
-  
+
       return res.status(200).json({ success: true, message: "User deleted successfully" });
     } catch (error) {
       console.error("Delete User Error:", error);
       return res.status(500).json({ success: false, message: "Error deleting user" });
     }
   }),
-  
-  
+
+
 };
 module.exports = userController;

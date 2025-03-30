@@ -77,9 +77,12 @@ const CreateTrainer = () => {
   const registerUser = async (data) => {
     setLoading(true);
     try {
+      const role = 'coach'
       const formData = new FormData();
       Object.entries(data).forEach(([key, value]) => formData.append(key, value));
       formData.set("image", avatar);
+      formData.set("role", role);
+      console.log(formData, "DATA")
 
       const config = { headers: { "Content-Type": "multipart/form-data" } };
       await axios.post(`${baseURL}/users/register`, formData, config);
@@ -109,7 +112,7 @@ const CreateTrainer = () => {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
+
 
   return (
     <>
@@ -237,7 +240,7 @@ const CreateTrainer = () => {
                                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                                       borderColor: '#4ECDC4',
                                     },
-                                  },   ...(field.name === 'password' && {
+                                  }, ...(field.name === 'password' && {
                                     endAdornment: (
                                       <InputAdornment position="end">
                                         <IconButton

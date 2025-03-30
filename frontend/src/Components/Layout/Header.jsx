@@ -97,7 +97,7 @@ const Header = () => {
                     {user ? (
                         <>
                             <IconButton onClick={handleMenuClick}>
-                                <Avatar alt={user.name} src={user.avatar?.url} />
+                                <Avatar alt={user.name} src={user?.image[0]?.url} />
                             </IconButton>
 
                             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
