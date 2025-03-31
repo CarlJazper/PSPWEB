@@ -315,3 +315,36 @@ exports.hasActiveTraining = async (req, res) => {
         });
     }
 }
+
+exports.getSalesStats = async (req, res) => {
+    try {
+        const today = new Date();
+        const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        const startOfYear = new Date(today.getFullYear(), 0, 1);
+
+        const todaySales = await AvailTrainer.aggregate([
+            { $match: { createdAt: { $gte: startOfDay } } },
+            { $group: { _id: null, totalSales: { $sum: "$total" } } }
+        ]);
+
+        const monthlySales = await AvailTrainer.aggregate([
+            { $match: { createdAt: { $gte: startOfMonth } } },
+            { $group: { _id: null, totalSales: { $sum: "$total" } } }
+        ]);
+
+        const yearlySales = await AvailTrainer.aggregate([
+            { $match: { createdAt: { $gte: startOfYear } } },
+            { $group: { _id: null, totalSales: { $sum: "$total" } } }
+        ]);
+
+        res.json({
+            todaySales: todaySales[0]?.totalSales || 0,
+            monthlySales: monthlySales[0]?.totalSales || 0,
+            yearlySales: yearlySales[0]?.totalSales || 0,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to fetch sales stats" });
+    }
+};

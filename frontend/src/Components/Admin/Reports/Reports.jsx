@@ -21,6 +21,7 @@ import {
   People as UserIcon,
   AttachMoney as SalesIcon,
   Diversity3 as SessionIcon,
+  Paid as SessionSaleIcon,
   Refresh as RefreshIcon,
   ExpandMore as ExpandMoreIcon,
 } from '@mui/icons-material';
@@ -29,6 +30,7 @@ import UserLog from './UserLogs';
 import MembershipSales from './MembershipSales';
 import GymMonitoring from './GymMonitoring';
 import TrainingSessions from './TrainingSession';
+import SessionSales from './SessionSales';
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   padding: theme.spacing(4),
@@ -111,6 +113,7 @@ const Report = () => {
     users: true,
     sales: true,
     sessions: true,
+    sessionsales: true,
   });
 
   const handleTabChange = (event, newValue) => {
@@ -164,6 +167,13 @@ const Report = () => {
       title: 'Training Sessions',
       icon: <SessionIcon />,
       component: <TrainingSessions />,
+      color: '#c62828',
+    },
+    {
+      id: 'sessionsales',
+      title: 'Session Sales',
+      icon: <SessionSaleIcon />,
+      component: <SessionSales />,
       color: '#c62828',
     },
   ];

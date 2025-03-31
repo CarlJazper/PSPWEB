@@ -98,7 +98,7 @@ const MembershipSales = () => {
                     <TableCell>{t._id.slice(-6)}</TableCell>
                     <TableCell>{t.userId?.name || "N/A"}</TableCell>
                     <TableCell>{t.userId?.email || "N/A"}</TableCell>
-                    <TableCell>₱{t.amount}</TableCell>
+                    <TableCell>{formatCurrency(t.amount)}</TableCell>
                     <TableCell>{t.transactionType}</TableCell>
                     <TableCell>{new Date(t.subscribedDate).toLocaleDateString()}</TableCell>
                   </TableRow>
@@ -165,7 +165,7 @@ const MembershipSales = () => {
                     <TableCell>{t._id.slice(-6)}</TableCell>
                     <TableCell>{t.userId?.name || "N/A"}</TableCell>
                     <TableCell>{t.userId?.email || "N/A"}</TableCell>
-                    <TableCell>₱{t.amount}</TableCell>
+                    <TableCell>{formatCurrency(t.amount)}</TableCell>
                     <TableCell>{t.transactionType}</TableCell>
                     <TableCell>{new Date(t.subscribedDate).toLocaleDateString()}</TableCell>
                   </TableRow>
@@ -180,7 +180,12 @@ const MembershipSales = () => {
         </TableContainer>
 
         {/* Yearly Transactions */}
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
         <Typography variant="h6" gutterBottom>Yearly Transactions</Typography>
+        <Typography variant="h6" color="primary">
+          Total Sales for Year {selectedYearlyYear}: {formatCurrency(yearlyTransactions.reduce((sum, t) => sum + t.amount, 0))}
+        </Typography>
+        </Box>
         <TableContainer component={Paper} sx={{ marginBottom: 2 }}>
           <Box sx={{ padding: 2 }}>
             <Select
@@ -212,7 +217,7 @@ const MembershipSales = () => {
                     <TableCell>{t._id.slice(-6)}</TableCell>
                     <TableCell>{t.userId?.name || "N/A"}</TableCell>
                     <TableCell>{t.userId?.email || "N/A"}</TableCell>
-                    <TableCell>₱{t.amount}</TableCell>
+                    <TableCell>{formatCurrency(t.amount)}</TableCell>
                     <TableCell>{t.transactionType}</TableCell>
                     <TableCell>{new Date(t.subscribedDate).toLocaleDateString()}</TableCell>
                   </TableRow>
