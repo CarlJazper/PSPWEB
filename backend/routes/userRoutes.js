@@ -17,6 +17,6 @@ router.get('/get-timedin-logs', userController.getTimeInLogs);
 
 router.put('/update-trainer/:id', upload.single('image'), userController.updateTrainer);
 router.delete('/user-delete/:id', userController.deleteUser);
-
+router.get('/get-ratings/:id', userController.getCoachRatings);
 
 module.exports = router;

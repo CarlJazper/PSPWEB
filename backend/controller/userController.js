@@ -5,6 +5,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../model/user");
 const Transaction = require("../model/transaction");
 const Log = require('../model/logs');
+const Rating = require('../model/rating');
 const stripe = require('stripe')(process.env.STRIPE_SECRET);
 const priceId = process.env.STRIPE_PRICE_ID
 const accesscard = process.env.STRIPE_ACCESSCARD
@@ -456,7 +457,23 @@ const userController = {
       return res.status(500).json({ success: false, message: "Error deleting user" });
     }
   }),
+  getCoachRatings: asyncHandler(async (req, res) => {
+    const { id } = req.params;
 
+    try {
+      const ratings = await Rating.find({ coachId: id });
 
+      return res.status(200).json({
+        success: true,
+        ratings,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Error fetching ratings data",
+        error: error.message,
+      });
+    }
+  }),
 };
 module.exports = userController;

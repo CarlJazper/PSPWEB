@@ -31,8 +31,12 @@ const UsersList = () => {
   const listUsers = async () => {
     try {
       const { data } = await axios.get(`${baseURL}/users/get-all-users`, config);
-      setAllUsers(data.users);
-      setFilteredUsers(data.users);
+
+      console.log(data.users)
+      const nonAdminUsers = data.users.filter(user => user.role !== 'admin');
+
+      setAllUsers(nonAdminUsers);
+      setFilteredUsers(nonAdminUsers);
       setLoading(false);
     } catch (error) {
       setError(error.response.data.message);
