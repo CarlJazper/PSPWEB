@@ -55,6 +55,7 @@ import ProtectedRoute from './utils/ProtectedRoute';
 import Header from './Components/Layout/Header'
 //import Footer from './Components/Layout/Footer'
 import Exercise from './Components/Exercises';
+import TrainerDetail from './Components/Admin/Trainer/TrainerDetail';
 
 
 function App() {
@@ -120,6 +121,7 @@ function App() {
 
                    {/* Exercise Routes */}
                   <Route path="trainers" element={<TrainerList refresh={refresh} />} />
+                  <Route path="trainer-detail/:id" element={<TrainerDetail/>} />
                   <Route path="create-trainer" element={<CreateTrainer onTrainerCreated={handleTrainerCreated} />} />
                   <Route path="update-trainer/:id" element={<UpdateTrainer />} />
 

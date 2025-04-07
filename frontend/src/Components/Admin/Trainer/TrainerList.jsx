@@ -19,6 +19,7 @@ import {
   useTheme,
   alpha,
 } from "@mui/material";
+import Visibility from '@mui/icons-material/Visibility';  // Correct import
 import { EditOutlined, DeleteOutline, PersonAdd, Person } from "@mui/icons-material";
 import baseURL from '../../../utils/baseURL'
 
@@ -180,6 +181,19 @@ const TrainerList = () => {
                             <EditOutlined fontSize="small" />
                           </IconButton>
                         </Tooltip>
+                        <Tooltip title="View Trainer">
+                          <IconButton
+                            onClick={() => navigate(`/admin/trainer-detail/${trainer._id}`)}
+                            size="small"
+                            sx={{
+                              color: theme.palette.primary.main,
+                              "&:hover": { backgroundColor: alpha(theme.palette.primary.main, 0.1) },
+                            }}
+                          >
+                            <Visibility fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+
                         <Tooltip title="Delete Trainer">
                           <IconButton
                             onClick={() => handleDelete(trainer._id)}
