@@ -47,7 +47,7 @@ const Header = () => {
         ? [
             { name: 'Dashboard', path: '/admin/dashboard' },
             { name: 'Reports', path: '/admin/reports' },
-            { name: 'Streams', path: '/admin/streams' },
+            // { name: 'Streams', path: '/admin/streams' },
         ]
         : [
             { name: 'Home', path: '/' },
