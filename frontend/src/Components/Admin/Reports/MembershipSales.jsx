@@ -29,7 +29,6 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-
 import baseURL from "../../../utils/baseURL";
 
 const MembershipSales = () => {
@@ -50,11 +49,14 @@ const MembershipSales = () => {
       currency: "PHP",
     }).format(value);
 
+  const getMonthName = (monthIndex, format = "short") =>
+    new Date(0, monthIndex).toLocaleString("default", { month: format });
+
   useEffect(() => {
     const fetchSalesData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const [salesResponse, transactionsResponse] = await Promise.all([
+        const [salesRes, transRes] = await Promise.all([
           axios.get(`${baseURL}/transaction/membership-sales-stats`, {
             headers: { Authorization: `Bearer ${token}` },
           }),
@@ -63,19 +65,19 @@ const MembershipSales = () => {
           }),
         ]);
 
-        const allTransactions = transactionsResponse.data.transactions;
+        const allTransactions = transRes.data.transactions;
         const today = new Date().setHours(0, 0, 0, 0);
         const years = [...new Set(allTransactions.map((t) =>
-          new Date(t.subscribedDate).getFullYear()))].sort((a, b) => b - a);
+          new Date(t.subscribedDate).getFullYear()
+        ))].sort((a, b) => b - a);
 
         setTransactions({
-          today: allTransactions.filter((t) =>
-            new Date(t.subscribedDate) >= today),
+          today: allTransactions.filter((t) => new Date(t.subscribedDate) >= today),
           all: allTransactions,
           years,
         });
 
-        setSalesData(salesResponse.data);
+        setSalesData(salesRes.data);
       } catch (err) {
         setError("Failed to fetch membership sales data");
       } finally {
@@ -86,54 +88,34 @@ const MembershipSales = () => {
     fetchSalesData();
   }, []);
 
-  const prepareChartData = () => {
-    if (!transactions.all.length) return [];
-
-    const monthlyData = Array.from({ length: 12 }, (_, i) => ({
-      month: new Date(0, i).toLocaleString("default", { month: "short" }),
-      amount: 0,
+  const aggregateMonthly = (key) => {
+    const monthly = Array.from({ length: 12 }, (_, i) => ({
+      month: getMonthName(i),
+      [key]: 0,
     }));
 
     transactions.all.forEach((t) => {
       const date = new Date(t.subscribedDate);
       if (date.getFullYear() === selectedYearlyYear) {
-        monthlyData[date.getMonth()].amount += t.amount;
+        monthly[date.getMonth()][key] += key === "count" ? 1 : t.amount;
       }
     });
 
-    return monthlyData;
+    return monthly;
   };
 
-  const prepareCountChartData = () => {
-    if (!transactions.all.length) return [];
-  
-    const monthlyCounts = Array.from({ length: 12 }, (_, i) => ({
-      month: new Date(0, i).toLocaleString("default", { month: "short" }),
-      count: 0,
-    }));
-  
-    transactions.all.forEach((t) => {
-      const date = new Date(t.subscribedDate);
-      if (date.getFullYear() === selectedYearlyYear) {
-        monthlyCounts[date.getMonth()].count += 1;
-      }
-    });
-  
-    return monthlyCounts;
-  };
-  
+  const getFilteredTransactions = (filterFn) =>
+    transactions.all.filter(filterFn);
 
-  const getMonthlyTransactions = () =>
-    transactions.all.filter(
-      (t) =>
-        new Date(t.subscribedDate).getFullYear() === selectedMonthYear.year &&
-        new Date(t.subscribedDate).getMonth() + 1 === selectedMonthYear.month
-    );
+  const monthlyTransactions = getFilteredTransactions(
+    (t) =>
+      new Date(t.subscribedDate).getFullYear() === selectedMonthYear.year &&
+      new Date(t.subscribedDate).getMonth() + 1 === selectedMonthYear.month
+  );
 
-  const getYearlyTransactions = () =>
-    transactions.all.filter(
-      (t) => new Date(t.subscribedDate).getFullYear() === selectedYearlyYear
-    );
+  const yearlyTransactions = getFilteredTransactions(
+    (t) => new Date(t.subscribedDate).getFullYear() === selectedYearlyYear
+  );
 
   if (loading) return <CircularProgress />;
   if (error) return <Typography color="error">{error}</Typography>;
@@ -177,72 +159,54 @@ const MembershipSales = () => {
     </>
   );
 
-  const yearlyTransactions = getYearlyTransactions();
-  const monthlyTransactions = getMonthlyTransactions();
+  const renderYearSelector = (value, onChange) => (
+    <Select value={value} onChange={(e) => onChange(+e.target.value)} size="small">
+      {transactions.years.map((year) => (
+        <MenuItem key={year} value={year}>{year}</MenuItem>
+      ))}
+    </Select>
+  );
 
   return (
     <Grid container spacing={2}>
       {/* Summary Cards */}
-      <Grid item xs={12} sm={4}>
-        <Card onClick={() => setViewMode("today")} sx={{ cursor: "pointer" }}>
-          <CardContent>
-            <Typography variant="h6">Today's Sales</Typography>
-            <Typography variant="h4">{formatCurrency(salesData.todayTotal)}</Typography>
-            <Typography variant="caption" color="primary">View Today's Transactions</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} sm={4}>
-        <Card onClick={() => setViewMode("monthly")} sx={{ cursor: "pointer" }}>
-          <CardContent>
-            <Typography variant="h6">Monthly Sales</Typography>
-            <Typography variant="h4">{formatCurrency(salesData.monthlyTotal)}</Typography>
-            <Typography variant="caption" color="primary">View Monthly Transactions</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
-      <Grid item xs={12} sm={4}>
-        <Card onClick={() => setViewMode("yearly")} sx={{ cursor: "pointer" }}>
-          <CardContent>
-            <Typography variant="h6">Yearly Sales</Typography>
-            <Typography variant="h4">{formatCurrency(salesData.yearlyTotal)}</Typography>
-            <Typography variant="caption" color="primary">View Yearly Transactions</Typography>
-          </CardContent>
-        </Card>
-      </Grid>
+      {["today", "monthly", "yearly"].map((mode) => (
+        <Grid item xs={12} sm={4} key={mode}>
+          <Card onClick={() => setViewMode(mode)} sx={{ cursor: "pointer" }}>
+            <CardContent>
+              <Typography variant="h6">{mode.charAt(0).toUpperCase() + mode.slice(1)} Sales</Typography>
+              <Typography variant="h4">
+                {formatCurrency(salesData[`${mode}Total`])}
+              </Typography>
+              <Typography variant="caption" color="primary">
+                View {mode.charAt(0).toUpperCase() + mode.slice(1)} Transactions
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      ))}
 
-      {/* Chart */}
+      {/* Chart View */}
       {viewMode === "chart" && (
         <Grid item xs={12}>
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
             <Typography variant="h6">Sales Trend ({selectedYearlyYear})</Typography>
-            <Select
-              value={selectedYearlyYear}
-              onChange={(e) => setSelectedYearlyYear(Number(e.target.value))}
-              size="small"
-            >
-              {transactions.years.map((year) => (
-                <MenuItem key={year} value={year}>{year}</MenuItem>
-              ))}
-            </Select>
+            {renderYearSelector(selectedYearlyYear, setSelectedYearlyYear)}
           </Box>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={prepareChartData()}
-              margin={{ left: 50, right: 20, top: 20, bottom: 20 }} // 👈 Give left space for currency
-            >
+            <LineChart data={aggregateMonthly("amount")} margin={{ left: 50, right: 20, top: 20, bottom: 20 }}>
               <Line type="monotone" dataKey="amount" stroke="#1976d2" strokeWidth={2} />
               <CartesianGrid stroke="#ccc" />
               <XAxis dataKey="month" />
-              <YAxis tickFormatter={(value) => formatCurrency(value)} />
-              <Tooltip formatter={(value) => formatCurrency(value)} />
+              <YAxis tickFormatter={formatCurrency} />
+              <Tooltip formatter={formatCurrency} />
             </LineChart>
           </ResponsiveContainer>
 
           <Box mt={4}>
             <Typography variant="h6">Transaction Volume ({selectedYearlyYear})</Typography>
             <ResponsiveContainer width="100%" height={250}>
-              <BarChart data={prepareCountChartData()}>
+              <BarChart data={aggregateMonthly("count")}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
                 <YAxis />
@@ -251,100 +215,65 @@ const MembershipSales = () => {
               </BarChart>
             </ResponsiveContainer>
           </Box>
-
-
         </Grid>
       )}
 
-      {/* Today Table */}
+      {/* Today Transactions */}
       {viewMode === "today" && (
         <Grid item xs={12}>
           {renderTable(transactions.today, "Today's Transactions")}
         </Grid>
       )}
 
-      {/* Monthly Table */}
+      {/* Monthly Transactions */}
       {viewMode === "monthly" && (
         <Grid item xs={12}>
           <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-            <Select
-              value={selectedMonthYear.year}
-              onChange={(e) => setSelectedMonthYear((prev) => ({ ...prev, year: +e.target.value }))}
-              size="small"
-            >
-              {transactions.years.map((year) => <MenuItem key={year} value={year}>{year}</MenuItem>)}
-            </Select>
+            {renderYearSelector(selectedMonthYear.year, (year) =>
+              setSelectedMonthYear((prev) => ({ ...prev, year }))
+            )}
             <Select
               value={selectedMonthYear.month}
-              onChange={(e) => setSelectedMonthYear((prev) => ({ ...prev, month: +e.target.value }))}
+              onChange={(e) =>
+                setSelectedMonthYear((prev) => ({ ...prev, month: +e.target.value }))
+              }
               size="small"
             >
               {Array.from({ length: 12 }, (_, i) => (
                 <MenuItem key={i + 1} value={i + 1}>
-                  {new Date(0, i).toLocaleString("default", { month: "long" })}
+                  {getMonthName(i, "long")}
                 </MenuItem>
               ))}
             </Select>
           </Box>
-
-          <Box
-            sx={{
-              mb: 2,
-              p: 2,
-              backgroundColor: "#f5f5f5",
-              borderRadius: 2,
-              border: "1px solid #e0e0e0",
-            }}
-          >
+          <Box sx={{ mb: 2, p: 2, backgroundColor: "#f5f5f5", borderRadius: 2, border: "1px solid #e0e0e0" }}>
             <Typography variant="subtitle2" color="textSecondary">
               Total Sales for the Month of
             </Typography>
             <Typography variant="h6" color="primary">
-              {new Date(0, selectedMonthYear.month - 1).toLocaleString("default", { month: "long" })} {selectedMonthYear.year}:{" "}
+              {getMonthName(selectedMonthYear.month - 1, "long")} {selectedMonthYear.year}:{" "}
               {formatCurrency(monthlyTransactions.reduce((sum, t) => sum + t.amount, 0))}
             </Typography>
           </Box>
-
-          {renderTable(getMonthlyTransactions(), "Monthly Transactions")}
+          {renderTable(monthlyTransactions, "Monthly Transactions")}
         </Grid>
       )}
 
-      {/* Yearly Table */}
+      {/* Yearly Transactions */}
       {viewMode === "yearly" && (
         <Grid item xs={12}>
-          <Box sx={{ mb: 2 }}>
-            <Select
-              value={selectedYearlyYear}
-              onChange={(e) => setSelectedYearlyYear(+e.target.value)}
-              size="small"
-            >
-              {transactions.years.map((year) => (
-                <MenuItem key={year} value={year}>{year}</MenuItem>
-              ))}
-            </Select>
-          </Box>
-
-          <Box
-            sx={{
-              mb: 2,
-              p: 2,
-              backgroundColor: "#f5f5f5",
-              borderRadius: 2,
-              border: "1px solid #e0e0e0",
-            }}
-          >
-            <Typography variant="subtitle2" color="textSecondary">
-              Total Sales for
-            </Typography>
+          <Box sx={{ mb: 2 }}>{renderYearSelector(selectedYearlyYear, setSelectedYearlyYear)}</Box>
+          <Box sx={{ mb: 2, p: 2, backgroundColor: "#f5f5f5", borderRadius: 2, border: "1px solid #e0e0e0" }}>
+            <Typography variant="subtitle2" color="textSecondary">Total Sales for</Typography>
             <Typography variant="h6" color="primary">
               Year {selectedYearlyYear}: {formatCurrency(yearlyTransactions.reduce((sum, t) => sum + t.amount, 0))}
             </Typography>
           </Box>
-
-          {renderTable(getYearlyTransactions(), "Yearly Transactions")}
+          {renderTable(yearlyTransactions, "Yearly Transactions")}
         </Grid>
       )}
     </Grid>
   );
 };
+
 export default MembershipSales;

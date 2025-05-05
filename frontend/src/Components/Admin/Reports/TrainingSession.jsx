@@ -1,69 +1,71 @@
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { Card, CardContent, Typography, CircularProgress, Accordion, AccordionSummary, AccordionDetails, Button, Dialog, DialogTitle, DialogContent, DialogActions, Select, MenuItem, Snackbar, Alert } from "@mui/material";
+import {Box,Card,CardContent,Typography,CircularProgress,Accordion,AccordionSummary,AccordionDetails,Button,Dialog,
+  DialogTitle,DialogContent,DialogActions,Select,MenuItem,Snackbar,Alert,Container,Chip,useTheme,alpha,
+} from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import PersonIcon from "@mui/icons-material/Person";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import FaceIcon from "@mui/icons-material/Face";
 import baseURL from "../../../utils/baseURL";
 
 const TrainingSessions = () => {
+  const theme = useTheme();
+
   const [users, setUsers] = useState([]);
+  const [coaches, setCoaches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [coaches, setCoaches] = useState([]);
   const [selectedCoach, setSelectedCoach] = useState("");
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
-  // Fetch users only when needed
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
   const fetchActiveUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${baseURL}/availTrainer/get-all-trainers`);
-      const allTrainings = response.data;
-
-      const activeUsers = await Promise.all(
-        allTrainings.map(async (training) => {
+      const { data: trainings } = await axios.get(`${baseURL}/availTrainer/get-all-trainers`);
+      const active = await Promise.all(
+        trainings.map(async ({ userId, coachID, _id }) => {
           try {
-            const sessionRes = await axios.get(`${baseURL}/availTrainer/has-active/${training.userId._id}`);
-            if (sessionRes.data.hasActive) {
-              return {
-                user: training.userId,
-                coach: training.coachID,
-                sessions: sessionRes.data.training.schedule || [],
-                trainingId: training._id,
-              };
-            }
-            return null;
+            const { data } = await axios.get(`${baseURL}/availTrainer/has-active/${userId._id}`);
+            return data.hasActive
+              ? {
+                  user: userId,
+                  coach: coachID,
+                  sessions: data.training.schedule || [],
+                  trainingId: _id,
+                }
+              : null;
           } catch {
             return null;
           }
         })
       );
-
-      setUsers(activeUsers.filter(user => user !== null));
-    } catch (error) {
-      console.error("Error fetching active users:", error);
-      setSnackbar({ open: true, message: "Failed to load training sessions", severity: "error" });
+      setUsers(active.filter(Boolean));
+    } catch (err) {
+      console.error("Error fetching active users:", err);
+      showSnackbar("Failed to load training sessions", "error");
     } finally {
       setLoading(false);
     }
   }, []);
 
-  useEffect(() => {
-    fetchActiveUsers(); // Fetch only on component mount
-  }, [fetchActiveUsers]);
-
   const fetchCoaches = async () => {
     try {
-      const response = await axios.get(`${baseURL}/users/get-all-users?role=coach`);
-      setCoaches(response.data.users);
-    } catch (error) {
-      console.error("Error fetching coaches:", error);
-      setSnackbar({ open: true, message: "Failed to load coaches", severity: "error" });
+      const { data } = await axios.get(`${baseURL}/users/get-all-users?role=coach`);
+      setCoaches(data.users);
+    } catch (err) {
+      console.error("Error fetching coaches:", err);
+      showSnackbar("Failed to load coaches", "error");
     }
   };
 
-  const handleOpenModal = (trainingId) => {
-    setSelectedUserId(trainingId);
+  const handleOpenModal = (id) => {
+    setSelectedUserId(id);
     setOpenModal(true);
     fetchCoaches();
   };
@@ -72,122 +74,272 @@ const TrainingSessions = () => {
     if (!selectedCoach || !selectedUserId) return;
     setLoading(true);
     try {
-      await axios.put(`${baseURL}/availTrainer/${selectedUserId}`, { coachID: selectedCoach });
-      const assignedCoach = coaches.find(c => c._id === selectedCoach);
-
-      setUsers(prevUsers =>
-        prevUsers.map(user =>
-          user.trainingId === selectedUserId
-            ? { ...user, coach: assignedCoach }
-            : user
+      await axios.put(`${baseURL}/availTrainer/${selectedUserId}`, {
+        coachID: selectedCoach,
+      });
+      const coach = coaches.find((c) => c._id === selectedCoach);
+      setUsers((prev) =>
+        prev.map((u) =>
+          u.trainingId === selectedUserId ? { ...u, coach } : u
         )
       );
-
-      setSnackbar({ open: true, message: "Coach assigned successfully", severity: "success" });
+      showSnackbar("Coach assigned successfully");
       setOpenModal(false);
-    } catch (error) {
-      console.error("Error assigning coach:", error);
-      setSnackbar({ open: true, message: "Failed to assign coach", severity: "error" });
+    } catch (err) {
+      console.error("Error assigning coach:", err);
+      showSnackbar("Failed to assign coach", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) return <CircularProgress />;
+  useEffect(() => {
+    fetchActiveUsers();
+  }, [fetchActiveUsers]);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "80vh",
+        }}
+      >
+        <CircularProgress size={40} thickness={4} />
+      </Box>
+    );
+  }
 
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Typography variant="h4" sx={{ fontWeight: 700, mb: 4 }}>
         Active Training Sessions
       </Typography>
 
-      {users.length > 0 ? (
-        users.map(({ user, coach, sessions, trainingId }) => (
-          <Card key={user._id} sx={{ marginBottom: 2 }}>
-            <CardContent>
-              <Typography variant="h6">Client name: {user.name}</Typography>
-              <Typography color="textSecondary">Email: {user.email}</Typography>
-              <Typography color="green">Has Active Training</Typography>
+      <Box sx={{ display: "grid", gap: 3 }}>
+        {users.length > 0 ? (
+          users.map(({ user, coach, sessions, trainingId }) => (
+            <Card
+              key={user._id}
+              elevation={0}
+              sx={{
+                borderRadius: 3,
+                border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                  transform: "translateY(-2px)",
+                  boxShadow: theme.shadows[4],
+                },
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <FaceIcon sx={{ fontSize: 40, color: theme.palette.primary.main, mr: 2 }} />
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary">Client Name</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>{user.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">{user.email}</Typography>
+                  </Box>
+                  <Chip label="Active Training" color="success" size="small" sx={{ ml: "auto" }} />
+                </Box>
 
-              {coach ? (
-                <>
-                  <Typography variant="body2" sx={{ marginTop: 1, fontWeight: "bold" }}>
-                    Assigned Coach:
-                  </Typography>
-                  <Typography color="textSecondary">{coach.name} ({coach.email})</Typography>
-                </>
-              ) : (
-                <>
-                  <Typography color="error">No coach assigned</Typography>
-                  <Button variant="contained" color="primary" onClick={() => handleOpenModal(trainingId)}>
-                    Assign Coach
-                  </Button>
-                </>
-              )}
+                <Box sx={{ mt: 3 }}>
+                  {coach ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        p: 2,
+                        bgcolor: alpha(theme.palette.primary.main, 0.04),
+                        borderRadius: 2,
+                      }}
+                    >
+                      <PersonIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
+                      <Box>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          Assigned Coach
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {coach.name} • {coach.email}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      onClick={() => handleOpenModal(trainingId)}
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: "none",
+                        py: 1.5,
+                        fontWeight: 600,
+                      }}
+                    >
+                      Assign Coach
+                    </Button>
+                  )}
+                </Box>
 
-              {sessions.length > 0 && (
-                <Accordion sx={{ marginTop: 1 }}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="body2" fontWeight="bold">
-                      View Training Sessions ({sessions.length})
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {sessions.map((session, index) => (
-                      <Typography key={index} color="textSecondary" sx={{ paddingLeft: 2 }}>
-                        {session.dateAssigned && session.timeAssigned
-                          ? `Session ${index + 1}: Scheduled for ${new Date(session.dateAssigned).toLocaleDateString()} - at ${new Date(session.timeAssigned).toLocaleTimeString()} - Status: ${session.status}`
-                          : `Session ${index + 1}: ${session.status === "waiting"
-                            ? "Waiting for schedule"
-                            : session.status === "pending"
-                              ? "Pending approval"
-                              : "Not scheduled"
-                          }`}
-                      </Typography>
-                    ))}
-                  </AccordionDetails>
-                </Accordion>
-              )}
-            </CardContent>
-          </Card>
-        ))
-      ) : (
-        <Typography>No users with active training sessions.</Typography>
-      )}
+                {sessions.length > 0 && (
+                  <Accordion
+                    elevation={0}
+                    sx={{
+                      mt: 3,
+                      "&:before": { display: "none" },
+                      bgcolor: "transparent",
+                    }}
+                  >
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      sx={{
+                        bgcolor: alpha(theme.palette.primary.main, 0.04),
+                        borderRadius: 2,
+                        "&.Mui-expanded": {
+                          borderBottomLeftRadius: 0,
+                          borderBottomRightRadius: 0,
+                        },
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <CalendarTodayIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                          Training Sessions ({sessions.length})
+                        </Typography>
+                      </Box>
+                    </AccordionSummary>
+                    <AccordionDetails
+                      sx={{
+                        bgcolor: alpha(theme.palette.primary.main, 0.02),
+                        borderBottomLeftRadius: 2,
+                        borderBottomRightRadius: 2,
+                      }}
+                    >
+                      {sessions.map((s, i) => (
+                        <Box
+                          key={i}
+                          sx={{
+                            p: 2,
+                            "&:not(:last-child)": {
+                              borderBottom: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+                            },
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              color: theme.palette.text.secondary,
+                            }}
+                          >
+                            <Chip label={`Session ${i + 1}`} size="small" sx={{ mr: 1 }} />
+                            {s.dateAssigned && s.timeAssigned ? (
+                              <>
+                                {new Date(s.dateAssigned).toLocaleDateString()} at{" "}
+                                {new Date(s.timeAssigned).toLocaleTimeString()}
+                                <Chip
+                                  label={s.status}
+                                  size="small"
+                                  color={s.status === "completed" ? "success" : "default"}
+                                  sx={{ ml: 1 }}
+                                />
+                              </>
+                            ) : (
+                              <Chip
+                                label={
+                                  s.status === "waiting"
+                                    ? "Waiting for schedule"
+                                    : s.status === "pending"
+                                    ? "Pending approval"
+                                    : "Not scheduled"
+                                }
+                                size="small"
+                                color="warning"
+                              />
+                            )}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </AccordionDetails>
+                  </Accordion>
+                )}
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Box
+            sx={{
+              textAlign: "center",
+              py: 8,
+              bgcolor: alpha(theme.palette.primary.main, 0.04),
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="h6" sx={{ color: theme.palette.text.secondary }}>
+              No active training sessions found
+            </Typography>
+          </Box>
+        )}
+      </Box>
 
       {/* Assign Coach Modal */}
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <DialogTitle>Assign a Coach</DialogTitle>
-        <DialogContent>
+      <Dialog open={openModal} onClose={() => setOpenModal(false)} PaperProps={{ sx: { borderRadius: 3, maxWidth: 500 } }}>
+        <DialogTitle sx={{ pb: 1, fontWeight: 600 }}>Assign a Coach</DialogTitle>
+        <DialogContent sx={{ pt: 2 }}>
           <Select
             value={selectedCoach}
             onChange={(e) => setSelectedCoach(e.target.value)}
             fullWidth
+            sx={{
+              borderRadius: 2,
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: alpha(theme.palette.divider, 0.2),
+              },
+            }}
           >
-            {coaches.map((coach) => (
-              <MenuItem key={coach._id} value={coach._id}>
-                {coach.name} ({coach.email})
+            {coaches.map(({ _id, name, email }) => (
+              <MenuItem key={_id} value={_id}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <FaceIcon sx={{ mr: 1, color: theme.palette.primary.main }} />
+                  <Box>
+                    <Typography variant="subtitle2">{name}</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {email}
+                    </Typography>
+                  </Box>
+                </Box>
               </MenuItem>
             ))}
           </Select>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenModal(false)} color="error">Cancel</Button>
-          <Button onClick={handleAssignCoach} color="primary">Assign</Button>
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button onClick={() => setOpenModal(false)} sx={{ borderRadius: 2, fontWeight: 600, textTransform: "none" }}>
+            Cancel
+          </Button>
+          <Button onClick={handleAssignCoach} variant="contained" sx={{ borderRadius: 2, fontWeight: 600, textTransform: "none" }}>
+            Assign Coach
+          </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar Notifications */}
+      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          sx={{ borderRadius: 2, width: "100%", boxShadow: theme.shadows[3] }}
+        >
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </div>
+    </Container>
   );
 };
 

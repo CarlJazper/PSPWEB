@@ -181,7 +181,7 @@ export default UsersList;
 /* CSS STYLES */
 const styles = `
 .users-container {
-  max-width: 1200px;
+  max-width: none;
   margin: 40px auto;
   padding: 20px;
   background: #fff;
