@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { cloudinary, secretKey } = require('../config/cloudinaryConfig')
 const asyncHandler = require("express-async-handler");
 const User = require("../model/user");
+const AvailTrainer = require("../model/availTrainer");
 const Transaction = require("../model/transaction");
 const Log = require('../model/logs');
 const Rating = require('../model/rating');
@@ -473,6 +474,38 @@ const userController = {
         message: "Error fetching ratings data",
         error: error.message,
       });
+    }
+  }),
+  getCoachClients: asyncHandler(async (req, res) => {
+    try {
+      const coaches = await User.find({ role: 'coach' }).select('_id name email image');
+
+      const coachClientList = await Promise.all(
+        coaches.map(async (coach) => {
+          const clients = await AvailTrainer.find({ coachID: coach._id })
+            .populate('userId', 'name email')
+            .lean();
+
+          const clientList = clients.map(client => ({
+            clientId: client.userId?._id,
+            name: client.userId?.name || 'Unknown',
+            email: client.userId?.email || 'Unknown',
+          }));
+
+          return {
+            coachId: coach._id,
+            coachName: coach.name,
+            coachEmail: coach.email,
+            image: coach.image || [],
+            clients: clientList.length > 0 ? clientList : "No clients"
+          };
+        })
+      );
+
+      res.status(200).json({ coachesWithClients: coachClientList });
+    } catch (error) {
+      console.error('Error fetching coach clients:', error);
+      res.status(500).json({ message: 'Server error fetching coach clients' });
     }
   }),
 };
