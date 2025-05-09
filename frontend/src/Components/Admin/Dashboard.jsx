@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 import { Box, Grid, Card, CardContent, Typography, Button, CircularProgress, Divider } from '@mui/material';
 import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
 import { getToken } from '../../utils/helpers';
-import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
 import baseURL from '../../utils/baseURL';
 import { motion } from 'framer-motion';
 import axios from 'axios';
-import baseURL from "../../utils/baseURL";
 import {
     Container,
     CardHeader,
@@ -178,7 +176,6 @@ const Dashboard = () => {
         </Grid>
     );
 
-    const theme = useTheme();
     const [tabValue, setTabValue] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [expanded, setExpanded] = useState({
