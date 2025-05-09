@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { Box, Grid, Card, CardContent, Typography, Button, CircularProgress, Divider } from '@mui/material';
 import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
 import { getToken } from '../../utils/helpers';
+import { Group, Store, FitnessCenter, Person } from '@mui/icons-material'; // Added Person icon for trainers
+import baseURL from '../../utils/baseURL';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 import baseURL from "../../utils/baseURL";
 import {
@@ -105,15 +108,16 @@ function TabPanel({ children, value, index, ...other }) {
 }
 
 const Dashboard = () => {
-    const [loading, setLoading] = useState(true);
-    const [allUsers, setAllUsers] = useState([]);
-    const [branchesCount, setBranchesCount] = useState(0);
-    const [exercisesCount, setExercisesCount] = useState(0);
-    const [trainersCount, setTrainersCount] = useState(0);
+  const theme = useTheme();
+  const [loading, setLoading] = useState(true);
+  const [allUsers, setAllUsers] = useState([]);
+  const [branchesCount, setBranchesCount] = useState(0);
+  const [exercisesCount, setExercisesCount] = useState(0);
+  const [trainersCount, setTrainersCount] = useState(0);
 
     const fetchAdminData = async () => {
-        try {
-            const config = { headers: { Authorization: `Bearer ${getToken()}` } };
+      try {
+        const config = { headers: { Authorization: `Bearer ${getToken()}` } };
 
             const { data: usersData } = await axios.get(`${baseURL}/users/get-all-users`, config);
             setAllUsers(usersData.users);
