@@ -46,7 +46,7 @@ const Header = () => {
     const navLinks = user?.role === 'admin'
         ? [
             { name: 'Dashboard', path: '/admin/dashboard' },
-            { name: 'Reports', path: '/admin/reports' },
+            // { name: 'Reports', path: '/admin/reports' },
             // { name: 'Streams', path: '/admin/streams' },
         ]
         : [
