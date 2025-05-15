@@ -23,28 +23,24 @@ const Coaches = () => {
       title: 'Richard Picar',
       image: `${import.meta.env.BASE_URL}/images/coach-1.jpg`,
       specialty: 'Strength & Conditioning',
-      experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #FF6B6B, #FF8E53)',
     },
     { 
       title: 'Emilie Reyes',
       image: `${import.meta.env.BASE_URL}/images/coach-2.jpg`,
       specialty: 'Yoga & Flexibility',
-      experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #4ECDC4, #45B7AF)',
     },
     { 
       title: 'Joshua Pascaldo',
       image: `${import.meta.env.BASE_URL}/images/coach-3.jpg`,
       specialty: 'CrossFit Expert',
-      experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #A66CFF, #9C55FF)',
     },
     { 
       title: 'Brian Mendez',
       image: `${import.meta.env.BASE_URL}/images/coach-4.jpg`,
       specialty: 'Nutrition Specialist',
-      experience: 'Years Experience',
       gradient: 'linear-gradient(135deg, #3EECAC, #3BE9AA)',
     },
   ];
@@ -186,29 +182,6 @@ const Coaches = () => {
                       >
                         {coach.experience}
                       </Typography>
-
-                      {/* Social Icons */}
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          gap: 2,
-                          mb: 2,
-                          '& svg': {
-                            fontSize: '1.5rem',
-                            transition: 'all 0.3s ease',
-                            cursor: 'pointer',
-                            color: 'rgba(255,255,255,0.7)',
-                            '&:hover': {
-                              transform: 'translateY(-2px)',
-                            }
-                          }
-                        }}
-                      >
-                        <InstagramIcon sx={{ '&:hover': { color: '#E1306C' } }} />
-                        <LinkedInIcon sx={{ '&:hover': { color: '#0077B5' } }} />
-                        <TwitterIcon sx={{ '&:hover': { color: '#1DA1F2' } }} />
-                      </Box>
 
                       {user && (
                         <Button
